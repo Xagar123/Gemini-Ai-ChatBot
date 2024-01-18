@@ -14,6 +14,7 @@
 		FA4556522B58FF7400286D90 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA4556512B58FF7400286D90 /* Assets.xcassets */; };
 		FA4556552B58FF7400286D90 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA4556532B58FF7400286D90 /* LaunchScreen.storyboard */; };
 		FA45565E2B58FF9F00286D90 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = FA45565D2B58FF9F00286D90 /* GoogleGenerativeAI */; };
+		FA4556602B592CF800286D90 /* API_KEY.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45565F2B592CF800286D90 /* API_KEY.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,8 @@
 		FA4556512B58FF7400286D90 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FA4556542B58FF7400286D90 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA4556562B58FF7400286D90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA45565F2B592CF800286D90 /* API_KEY.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API_KEY.swift; sourceTree = "<group>"; };
+		FA4556612B592F2600286D90 /* GenerativeAl-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GenerativeAl-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,10 +64,12 @@
 				FA4556482B58FF7000286D90 /* AppDelegate.swift */,
 				FA45564A2B58FF7000286D90 /* SceneDelegate.swift */,
 				FA45564C2B58FF7000286D90 /* ViewController.swift */,
+				FA45565F2B592CF800286D90 /* API_KEY.swift */,
 				FA45564E2B58FF7000286D90 /* Main.storyboard */,
 				FA4556512B58FF7400286D90 /* Assets.xcassets */,
 				FA4556532B58FF7400286D90 /* LaunchScreen.storyboard */,
 				FA4556562B58FF7400286D90 /* Info.plist */,
+				FA4556612B592F2600286D90 /* GenerativeAl-Info.plist */,
 			);
 			path = "GemeniAi project";
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 			files = (
 				FA45564D2B58FF7000286D90 /* ViewController.swift in Sources */,
 				FA4556492B58FF7000286D90 /* AppDelegate.swift in Sources */,
+				FA4556602B592CF800286D90 /* API_KEY.swift in Sources */,
 				FA45564B2B58FF7000286D90 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
