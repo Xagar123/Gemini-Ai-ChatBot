@@ -71,7 +71,7 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
                 // Add gradient layer to the view's layer
       //  self.view.layer.insertSublayer(gradientLayer, at: 0)
         
-        setUpAnimation(fileName: "Natural AI brain brand element")
+        setUpAnimation(fileName: "Natural AI brain brand element", gifImageView: self.gifImageView)
     }
     
     func startSpeechRecognition() {
@@ -196,7 +196,28 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
     }
     
     
-    func setUpAnimation(fileName: String) {
+    
+}
+
+extension UIColor {
+    convenience init(hex: String, alpha: CGFloat = 1.0) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+
+        var rgb: UInt64 = 0
+
+        Scanner(string: hexSanitized).scanHexInt64(&rgb)
+
+        let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+        let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+        let blue = CGFloat(rgb & 0x0000FF) / 255.0
+
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
+}
+
+extension UIViewController {
+    func setUpAnimation(fileName: String, gifImageView: UIImageView) {
         guard let gifURL = Bundle.main.url(forResource: fileName, withExtension: "gif") else {
             print("Could not find GIF file")
             return
@@ -221,27 +242,10 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
             }
             
             DispatchQueue.main.async {
-                self.gifImageView.animationImages = frames
-                self.gifImageView.animationDuration = 2
-                self.gifImageView.startAnimating()
+                gifImageView.animationImages = frames
+                gifImageView.animationDuration = 2
+                gifImageView.startAnimating()
             }
         }
-    }
-}
-
-extension UIColor {
-    convenience init(hex: String, alpha: CGFloat = 1.0) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-
-        var rgb: UInt64 = 0
-
-        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-
-        let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
-        let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
-        let blue = CGFloat(rgb & 0x0000FF) / 255.0
-
-        self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
 }

@@ -22,12 +22,14 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     @IBOutlet weak var textViewField: UITextView!
     @IBOutlet weak var textViewHC: NSLayoutConstraint!
     @IBOutlet weak var responseList: UILabel!
-    
     @IBOutlet weak var sendAndMicBtn: UIButton!
+    @IBOutlet weak var sendAndMicBtnIcon: UIImageView!
+    
+    @IBOutlet weak var loadingGif: UIImageView!
+    
+    
     
     var isMicEnable = true
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +37,13 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         textViewField.isScrollEnabled = false
         adjustTextViewHeight()
         textViewHC.constant = 50
+    
+        sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
+        self.textViewField.layer.cornerRadius = 20
         
-        sendAndMicBtn.setImage(UIImage(systemName: "mic.circle"), for: .normal)
-        
+//        setUpAnimation(fileName: "Organic Artificial Intelligence design for milkinside", gifImageView: self.loadingGif)
     }
-
+    
     //MARK: - Fetch Response
     func sendMessage() {
         aiResponse = ""
@@ -53,6 +57,7 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                 textViewField.text = ""
                 aiResponse = text
                 print(text)
+//                self.loadingGif.isHidden = true
                 self.responseList.text = text
                 
                 
@@ -63,22 +68,22 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     }
     
     func adjustTextViewHeight() {
-           // Calculate the new content size
-           let newSize = textViewField.sizeThatFits(CGSize(width: textViewField.frame.width, height: CGFloat.greatestFiniteMagnitude))
-
-           // Update the height constraint based on the new content size
-//        textViewHC.constant = newSize.height
+        // Calculate the new content size
+        let newSize = textViewField.sizeThatFits(CGSize(width: textViewField.frame.width, height: CGFloat.greatestFiniteMagnitude))
+        
+        // Update the height constraint based on the new content size
+        //        textViewHC.constant = newSize.height
         textViewHC.constant = max(50, newSize.height)
-
-           // Optionally, you can animate the height change for a smooth transition
-           UIView.animate(withDuration: 0.3) {
-               self.view.layoutIfNeeded()
-           }
-       }
+        
+        // Optionally, you can animate the height change for a smooth transition
+        UIView.animate(withDuration: 0.3) {
+            self.view.layoutIfNeeded()
+        }
+    }
     
     @IBAction func sendBtnTapped(_ sender: UIButton) {
         print(textViewField.text!)
-//        sendMessage()
+        
         if isMicEnable {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             guard let viewController = storyboard.instantiateViewController(withIdentifier: "voiceToTextViewController") as? voiceToTextViewController else { return }
@@ -87,7 +92,9 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
             navVc.modalPresentationStyle = .fullScreen
             navVc.modalTransitionStyle = .crossDissolve
             present(navVc, animated: true)
-        }else {
+            
+        } else {
+//            self.loadingGif.isHidden = false
             sendMessage()
             IQKeyboardManager.shared.resignFirstResponder()
         }
@@ -100,12 +107,11 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         // Check if the text view is empty
         let isTextViewEmpty = textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         
-        // Set the button image based on the condition
         if isTextViewEmpty {
-            sendAndMicBtn.setImage(UIImage(systemName: "mic.circle"), for: .normal)
+            sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
             self.isMicEnable = true
         } else {
-            sendAndMicBtn.setImage(UIImage(systemName: "paperplane.circle.fill"), for: .normal)
+            sendAndMicBtnIcon.image = UIImage(systemName: "paperplane.circle.fill")
             self.isMicEnable = false
         }
     }
@@ -114,8 +120,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     func voiceToTextData(_ userInput: String) {
         print("Voice to text input \(userInput)")
     }
-  
-
+    
+    
 }
 
 
