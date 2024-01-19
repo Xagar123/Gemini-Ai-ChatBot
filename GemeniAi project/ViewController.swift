@@ -11,7 +11,8 @@ import AVKit
 import AVFoundation
 import IQKeyboardManagerSwift
 
-class ViewController: UIViewController,UITextViewDelegate {
+class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
+    
     
     let model = GenerativeModel(name: "gemini-pro", apiKey: "AIzaSyCMRaH7pJV0r5PbH6yGmNn0HgWNK2_2f4Q")
     var inputText = ""
@@ -81,6 +82,7 @@ class ViewController: UIViewController,UITextViewDelegate {
         if isMicEnable {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             guard let viewController = storyboard.instantiateViewController(withIdentifier: "voiceToTextViewController") as? voiceToTextViewController else { return }
+            viewController.delegate = self
             let navVc = UINavigationController(rootViewController: viewController)
             navVc.modalPresentationStyle = .fullScreen
             navVc.modalTransitionStyle = .crossDissolve
@@ -106,6 +108,11 @@ class ViewController: UIViewController,UITextViewDelegate {
             sendAndMicBtn.setImage(UIImage(systemName: "paperplane.circle.fill"), for: .normal)
             self.isMicEnable = false
         }
+    }
+    
+    //MARK: - VoiceToText Delegate
+    func voiceToTextData(_ userInput: String) {
+        print("Voice to text input \(userInput)")
     }
   
 

@@ -183,9 +183,14 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
     @IBAction func crossAndSendBtn(_ sender: UIButton) {
         if isPlaying {
             print("cross btn")
+            self.textLabel.text = ""
+            resetAudioEngine()
+            stopRecording()
+            startSpeechRecognition()
         }else {
             print("send btn")
-            self.delegate?.voiceToTextData("")
+            self.delegate?.voiceToTextData(self.textLabel.text ?? "")
+            self.dismiss(animated: true)
            
         }
     }
