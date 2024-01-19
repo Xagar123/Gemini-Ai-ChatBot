@@ -74,8 +74,11 @@
 				FA4556482B58FF7000286D90 /* AppDelegate.swift */,
 				FA45564A2B58FF7000286D90 /* SceneDelegate.swift */,
 				FA45564C2B58FF7000286D90 /* ViewController.swift */,
+<<<<<<< HEAD
 				0E7774032B592AFD00A3EEE5 /* voiceToTextViewController.swift */,
+=======
 				FA45565F2B592CF800286D90 /* API_KEY.swift */,
+>>>>>>> feature/gemeni_api
 				FA45564E2B58FF7000286D90 /* Main.storyboard */,
 				0E77740B2B594FBF00A3EEE5 /* Organic Artificial Intelligence design for milkinside.gif */,
 				0E7774072B59448400A3EEE5 /* Natural AI brain brand element.gif */,
