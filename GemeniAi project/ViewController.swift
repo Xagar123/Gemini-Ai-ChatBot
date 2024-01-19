@@ -9,6 +9,7 @@ import UIKit
 import GoogleGenerativeAI
 import AVKit
 import AVFoundation
+import IQKeyboardManagerSwift
 
 class ViewController: UIViewController,UITextViewDelegate {
     
@@ -21,6 +22,11 @@ class ViewController: UIViewController,UITextViewDelegate {
     @IBOutlet weak var textViewHC: NSLayoutConstraint!
     @IBOutlet weak var responseList: UILabel!
     
+    @IBOutlet weak var sendAndMicBtn: UIButton!
+    
+    var isMicEnable = true
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +34,8 @@ class ViewController: UIViewController,UITextViewDelegate {
         textViewField.isScrollEnabled = false
         adjustTextViewHeight()
         textViewHC.constant = 50
+        
+        sendAndMicBtn.setImage(UIImage(systemName: "mic.circle"), for: .normal)
         
     }
 
@@ -69,11 +77,35 @@ class ViewController: UIViewController,UITextViewDelegate {
     
     @IBAction func sendBtnTapped(_ sender: UIButton) {
         print(textViewField.text!)
-        sendMessage()
+//        sendMessage()
+        if isMicEnable {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            guard let viewController = storyboard.instantiateViewController(withIdentifier: "voiceToTextViewController") as? voiceToTextViewController else { return }
+            let navVc = UINavigationController(rootViewController: viewController)
+            navVc.modalPresentationStyle = .fullScreen
+            navVc.modalTransitionStyle = .crossDissolve
+            present(navVc, animated: true)
+        }else {
+            sendMessage()
+            IQKeyboardManager.shared.resignFirstResponder()
+        }
+        
+        
     }
     
     func textViewDidChange(_ textView: UITextView) {
         self.adjustTextViewHeight()
+        // Check if the text view is empty
+        let isTextViewEmpty = textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        
+        // Set the button image based on the condition
+        if isTextViewEmpty {
+            sendAndMicBtn.setImage(UIImage(systemName: "mic.circle"), for: .normal)
+            self.isMicEnable = true
+        } else {
+            sendAndMicBtn.setImage(UIImage(systemName: "paperplane.circle.fill"), for: .normal)
+            self.isMicEnable = false
+        }
     }
   
 

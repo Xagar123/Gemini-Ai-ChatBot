@@ -9,6 +9,10 @@ import UIKit
 import Speech
 import AVFoundation
 
+protocol voiceToTextInput {
+    func voiceToTextData(_ userInput: String)
+}
+
 
 class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
     
@@ -19,11 +23,15 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
     
     @IBOutlet weak var gifImageView: UIImageView!
     @IBOutlet weak var textLabel: UILabel!
-//    var videoView : UIImageView = {
-//        let v = UIImageView()
-//        v.translatesAutoresizingMaskIntoConstraints = false
-//        return v
-//    }()
+
+    var isPlaying = true
+    @IBOutlet weak var playPauseIcon: UIImageView!
+    
+    @IBOutlet weak var crossAndSendBtn: UIButton!
+    
+    var delegate:voiceToTextInput?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -35,6 +43,8 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
             }
         }
         
+        playPauseIcon.image = UIImage(systemName: "pause.circle")
+        startSpeechRecognition()
         // view.backgroundColor = .systemBackground
 //        view.addSubview(videoView)
 //        videoView.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +145,7 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
         audioEngine.inputNode.removeTap(onBus: 0)
         recognitionRequest = nil
         recognitionTask = nil
-        self.textLabel.text = ""
+//        self.textLabel.text = ""
     }
     
     @IBAction func startButtonPressed(_ sender: UIButton) {
@@ -147,6 +157,39 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
         resetAudioEngine()
         stopRecording()
     }
+    
+    @IBAction func playPauseBtn(_ sender: UIButton) {
+        
+        isPlaying.toggle()
+        
+        if isPlaying {
+            playPauseIcon.image = UIImage(systemName: "pause.circle")
+//            resetAudioEngine()
+//            stopRecording()
+            startSpeechRecognition()
+            self.crossAndSendBtn.setImage(UIImage(systemName: "x.circle"), for: .normal)
+        }else {
+            playPauseIcon.image = UIImage(systemName: "mic.circle")
+            self.crossAndSendBtn.setImage(UIImage(systemName: "paperplane.circle.fill"), for: .normal)
+            resetAudioEngine()
+            stopRecording()
+        }
+    }
+    
+    @IBAction func previousBtnTapped(_ sender: UIButton) {
+        self.dismiss(animated: true)
+    }
+    
+    @IBAction func crossAndSendBtn(_ sender: UIButton) {
+        if isPlaying {
+            print("cross btn")
+        }else {
+            print("send btn")
+            self.delegate?.voiceToTextData("")
+           
+        }
+    }
+    
     
     func setUpAnimation(fileName: String) {
         guard let gifURL = Bundle.main.url(forResource: fileName, withExtension: "gif") else {
