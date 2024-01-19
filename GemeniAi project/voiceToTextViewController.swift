@@ -164,6 +164,7 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
         
         if isPlaying {
             playPauseIcon.image = UIImage(systemName: "pause.circle")
+            self.gifImageView.startAnimating()
 //            resetAudioEngine()
 //            stopRecording()
             startSpeechRecognition()
@@ -172,6 +173,7 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
             playPauseIcon.image = UIImage(systemName: "mic.circle")
             self.crossAndSendBtn.setImage(UIImage(systemName: "paperplane.circle.fill"), for: .normal)
             resetAudioEngine()
+            self.gifImageView.stopAnimating()
             stopRecording()
         }
     }
@@ -219,6 +221,7 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
                 self.gifImageView.animationImages = frames
                 self.gifImageView.animationDuration = 2
                 self.gifImageView.startAnimating()
+                
             }
         }
     }
