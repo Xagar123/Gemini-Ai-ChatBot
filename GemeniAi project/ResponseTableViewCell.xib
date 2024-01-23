@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,7 +17,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Ni-hw-hMU" userLabel="responseLable">
-                        <rect key="frame" x="50" y="41" width="356" height="54"/>
+                        <rect key="frame" x="50" y="41" width="326" height="54"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                         <color key="textColor" red="0.34901961679999999" green="0.75686275960000005" blue="0.70980393890000004" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -49,7 +49,7 @@
                     <constraint firstItem="1Ni-hw-hMU" firstAttribute="top" secondItem="g9X-XF-Cm1" secondAttribute="bottom" constant="8" id="b9D-8R-BE2"/>
                     <constraint firstAttribute="trailing" secondItem="g9X-XF-Cm1" secondAttribute="trailing" constant="10" id="fCK-Ze-EMV"/>
                     <constraint firstItem="0dj-G6-Q7o" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="fuh-QT-xED"/>
-                    <constraint firstAttribute="trailing" secondItem="1Ni-hw-hMU" secondAttribute="trailing" id="ksG-jD-0Vj"/>
+                    <constraint firstAttribute="trailing" secondItem="1Ni-hw-hMU" secondAttribute="trailing" constant="30" id="ksG-jD-0Vj"/>
                     <constraint firstItem="g9X-XF-Cm1" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="rU7-Ox-4oJ"/>
                 </constraints>
             </tableViewCellContentView>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -16,23 +16,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="back" translatesAutoresizingMaskIntoConstraints="NO" id="Bw0-Xw-TXb">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="backWalpaper" translatesAutoresizingMaskIntoConstraints="NO" id="Bw0-Xw-TXb">
                                 <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                                 <color key="tintColor" systemColor="systemGray2Color"/>
                             </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text=" " textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="i4k-1x-rzS">
-                                <rect key="frame" x="16" y="705" width="301" height="50"/>
+                                <rect key="frame" x="16" y="758" width="301" height="50"/>
                                 <color key="backgroundColor" red="0.270588249" green="0.58431375029999999" blue="0.66666668650000005" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="FEH-JO-n4G"/>
                                     <constraint firstAttribute="width" constant="301" id="vw1-Kk-HQe"/>
                                 </constraints>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rEN-5q-XeL">
-                                <rect key="frame" x="325" y="705" width="60" height="50"/>
+                                <rect key="frame" x="325" y="758" width="60" height="50"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yIR-Ou-xiD">
                                         <rect key="frame" x="0.0" y="0.0" width="60" height="50"/>
@@ -68,7 +68,7 @@
                                 </constraints>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Bgn-Bf-bas">
-                                <rect key="frame" x="0.0" y="159" width="393" height="536"/>
+                                <rect key="frame" x="0.0" y="159" width="393" height="589"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
@@ -83,12 +83,12 @@
                             <constraint firstItem="i4k-1x-rzS" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="KOP-Ys-KkM"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Bw0-Xw-TXb" secondAttribute="trailing" id="LMx-Uf-GMc"/>
                             <constraint firstItem="yC0-4U-HQc" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="UPm-cx-EcE"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rEN-5q-XeL" secondAttribute="bottom" constant="63" id="Vmt-f2-0RP"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rEN-5q-XeL" secondAttribute="bottom" constant="10" id="Vmt-f2-0RP"/>
                             <constraint firstItem="Bw0-Xw-TXb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="ak5-96-VEA"/>
                             <constraint firstItem="Bgn-Bf-bas" firstAttribute="top" secondItem="yC0-4U-HQc" secondAttribute="bottom" id="eg5-U2-9Pc"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Bgn-Bf-bas" secondAttribute="trailing" id="f4l-H7-OG1"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rEN-5q-XeL" secondAttribute="trailing" constant="8" id="gnV-CC-dMe"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="i4k-1x-rzS" secondAttribute="bottom" constant="63" id="pSp-SW-Iv9"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="i4k-1x-rzS" secondAttribute="bottom" constant="10" id="pSp-SW-Iv9"/>
                             <constraint firstAttribute="bottomMargin" secondItem="Bw0-Xw-TXb" secondAttribute="bottom" id="tXW-a4-J7e"/>
                             <constraint firstItem="Bw0-Xw-TXb" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="uzF-uC-dug"/>
                         </constraints>
@@ -126,7 +126,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="57j-56-xCr"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="DINAlternate-Bold" family="DIN Alternate" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="DINAlternate-Bold" family="DIN Alternate" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -220,7 +220,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="back" width="640" height="896"/>
+        <image name="backWalpaper" width="720" height="1280"/>
         <image name="gemeni" width="1057" height="252"/>
         <image name="note.text.badge.plus" catalog="system" width="128" height="109"/>
         <image name="pause.circle" catalog="system" width="128" height="123"/>

@@ -52,8 +52,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         
     
         sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
-        self.textViewField.layer.cornerRadius = 20
         self.textViewField.clipsToBounds = true
+        self.textViewField.layer.cornerRadius = 10
 //        setUpAnimation(fileName: "AI", gifImageView: self.botView)
 //        self.botView.isHidden = true
         
@@ -91,8 +91,11 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                     print(text)
                     self.sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
                     self.responseArr.append(text)
+                    self.isMicEnable = true
 //                    self.botView.isHidden = true
                     self.tableView.isHidden = false
+                    self.textViewHC.constant = 50
+                    IQKeyboardManager.shared.resignFirstResponder()
                     self.tableView.reloadData()
                 }
 
@@ -114,6 +117,7 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         // Optionally, you can animate the height change for a smooth transition
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
+            self.applyGraident(self.textViewField as Any)
         }
     }
     
