@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "MYn-Global-Notifications_type=design&node-id=0%3A1&mode=design&t=3zpKIX1Wcpzde9de-1.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "MYn-Global-Notifications_type=design&node-id=0%3A1&mode=design&t=3zpKIX1Wcpzde9de-1@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "MYn-Global-Notifications_type=design&node-id=0%3A1&mode=design&t=3zpKIX1Wcpzde9de-1@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

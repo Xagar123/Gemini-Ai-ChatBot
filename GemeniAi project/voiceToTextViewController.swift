@@ -21,6 +21,7 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     
+    @IBOutlet weak var previousIcon: UIButton!
     @IBOutlet weak var gifImageView: UIImageView!
     @IBOutlet weak var textLabel: UILabel!
 
@@ -34,7 +35,10 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.playPauseIcon.tintColor = UIColor.blue
+        self.crossAndSendBtn.tintColor = UIColor.blue
+        self.previousIcon.tintColor = UIColor.blue
+        UIColor().setupGradient(topColor: "#0A0A26", bottomColor: "#0B0827", view: self.view)
         //check if recognization is available
         SFSpeechRecognizer.requestAuthorization { authState in
             if authState == SFSpeechRecognizerAuthorizationStatus.authorized {
@@ -55,24 +59,14 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
 //            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 //        ])
         
-        let gradientLayer = CAGradientLayer()
-                gradientLayer.frame = view.bounds
-
-                // Define gradient colors
-                let topColor = UIColor(hex: "#0A0A26").cgColor
-                let bottomColor = UIColor(hex: "#0B0827").cgColor
-
-                // Set gradient colors
-                gradientLayer.colors = [topColor, bottomColor]
-
-                // Set gradient locations (optional)
-                gradientLayer.locations = [0.0, 1.0]
-
+        
                 // Add gradient layer to the view's layer
       //  self.view.layer.insertSublayer(gradientLayer, at: 0)
         
         setUpAnimation(fileName: "Natural AI brain brand element", gifImageView: self.gifImageView)
     }
+    
+    
     
     func startSpeechRecognition() {
         do {
@@ -163,12 +157,33 @@ class voiceToTextViewController: UIViewController, SFSpeechRecognizerDelegate {
         isPlaying.toggle()
         
         if isPlaying {
+            
             playPauseIcon.image = UIImage(systemName: "pause.circle")
+           // UIColor().setupGradient(topColor: "#0A0A26", bottomColor: "#0B0827", view: self.view)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.playPauseIcon.tintColor = UIColor.blue
+                self.crossAndSendBtn.tintColor = UIColor.blue
+                self.previousIcon.tintColor = UIColor.blue
+                self.textLabel.textColor = UIColor.white
+                self.view.backgroundColor = UIColor.init(hex: "#0B0827")
+                }
+            
+            setUpAnimation(fileName: "Natural AI brain brand element", gifImageView: self.gifImageView)
 //            resetAudioEngine()
 //            stopRecording()
             startSpeechRecognition()
             self.crossAndSendBtn.setImage(UIImage(systemName: "x.circle"), for: .normal)
         }else {
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                self.playPauseIcon.tintColor = UIColor.orange
+                self.crossAndSendBtn.tintColor = UIColor.orange
+                self.previousIcon.tintColor = UIColor.orange
+                self.view.backgroundColor = .white
+                self.textLabel.textColor = UIColor.black
+                }
+           
+            setUpAnimation(fileName: "Asistente", gifImageView: self.gifImageView)
             playPauseIcon.image = UIImage(systemName: "mic.circle")
             self.crossAndSendBtn.setImage(UIImage(systemName: "paperplane.circle.fill"), for: .normal)
             resetAudioEngine()
@@ -247,5 +262,24 @@ extension UIViewController {
                 gifImageView.startAnimating()
             }
         }
+    }
+}
+
+extension UIColor {
+    
+    func setupGradient(topColor : String, bottomColor : String, view:UIView){
+        let gradientLayer = CAGradientLayer()
+                gradientLayer.frame = view.bounds
+
+                // Define gradient colors
+                let topColor = UIColor(hex: topColor).cgColor
+                let bottomColor = UIColor(hex: bottomColor).cgColor
+
+                // Set gradient colors
+                gradientLayer.colors = [topColor, bottomColor]
+
+                // Set gradient locations (optional)
+                gradientLayer.locations = [0.0, 1.0]
+
     }
 }

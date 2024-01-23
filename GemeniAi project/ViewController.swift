@@ -26,9 +26,13 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     @IBOutlet weak var sendAndMicBtnIcon: UIImageView!
     
     @IBOutlet weak var loadingGif: UIImageView!
+    @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var botView: UIImageView!
+    let activityIndicator = UIActivityIndicatorView()
     
     
-    
+    var responseArr = [String]()
     var isMicEnable = true
     
     override func viewDidLoad() {
@@ -37,11 +41,36 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         textViewField.isScrollEnabled = false
         adjustTextViewHeight()
         textViewHC.constant = 50
+        
+        activityIndicator.style = .large
+                activityIndicator.hidesWhenStopped = true
+                activityIndicator.center = view.center
+        activityIndicator.color = UIColor.white
+                view.addSubview(activityIndicator)
+        view.bringSubviewToFront(activityIndicator)
+        
+        
     
         sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
         self.textViewField.layer.cornerRadius = 20
+        self.textViewField.clipsToBounds = true
+//        setUpAnimation(fileName: "AI", gifImageView: self.botView)
+//        self.botView.isHidden = true
         
-//        setUpAnimation(fileName: "Organic Artificial Intelligence design for milkinside", gifImageView: self.loadingGif)
+        self.applyGraident(textViewField as Any)
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UINib(nibName: "ResponseTableViewCell", bundle: nil), forCellReuseIdentifier: "ResponseTableViewCell")
+        
+        textViewField.text = " Enter your text here..."
+        textViewField.textColor = UIColor.white
+        
+        
+        // Add tap gesture recognizer to dismiss keyboard
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        
     }
     
     //MARK: - Fetch Response
@@ -54,12 +83,19 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                     textViewField.text = "Sorry, I could not process that. InPlease try again"
                     return
                 }
-                textViewField.text = ""
-                aiResponse = text
-                print(text)
-//                self.loadingGif.isHidden = true
-                self.responseList.text = text
-                
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    self.view.isUserInteractionEnabled = true
+                    self.textViewField.text = ""
+                    self.aiResponse = text
+                    print(text)
+                    self.sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
+                    self.responseArr.append(text)
+//                    self.botView.isHidden = true
+                    self.tableView.isHidden = false
+                    self.tableView.reloadData()
+                }
+
                 
             } catch {
                 aiResponse = "Something went wrong.. \n\(error.localizedDescription)"
@@ -85,6 +121,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         print(textViewField.text!)
         
         if isMicEnable {
+//            self.loadingGif.isHidden = false
+//            self.botView.isHidden = true
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             guard let viewController = storyboard.instantiateViewController(withIdentifier: "voiceToTextViewController") as? voiceToTextViewController else { return }
             viewController.delegate = self
@@ -95,13 +133,42 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
             
         } else {
 //            self.loadingGif.isHidden = false
-            sendMessage()
-            IQKeyboardManager.shared.resignFirstResponder()
+            DispatchQueue.main.async {
+                self.activityIndicator.startAnimating()
+                self.view.isUserInteractionEnabled = false
+//                self.tableView.isHidden = true
+//                self.botView.isHidden = false
+                self.responseArr.append(self.textViewField.text)
+                self.sendMessage()
+                IQKeyboardManager.shared.resignFirstResponder()
+            }
+            
         }
-        
         
     }
     
+    
+    func applyGraident(_ property: Any) {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = textViewField.bounds
+        gradientLayer.colors = [
+            UIColor(red: 0/255, green: 241/255, blue: 198/255, alpha: 1).cgColor,
+            UIColor(red: 45/255, green: 56/255, blue: 153/255, alpha: 0.93).cgColor
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        gradientLayer.locations = [0.0, 1.0]
+        
+        // Apply the gradient to the text field's layer
+//        textViewField.layer.insertSublayer(gradientLayer, at: 0)
+        (property as AnyObject).layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    //MARK: - TextField
     func textViewDidChange(_ textView: UITextView) {
         self.adjustTextViewHeight()
         // Check if the text view is empty
@@ -116,11 +183,29 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         }
     }
     
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        // Clear the placeholder text when the user starts typing
+        if textView.text == " Enter your text here..." {
+            textView.text = ""
+            textView.textColor = UIColor.white
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        // Set the placeholder text again if the text view is empty
+        if textView.text.isEmpty {
+            textView.text = " Enter your text here..."
+            textView.textColor = UIColor.white
+        }
+    }
+    
     //MARK: - VoiceToText Delegate
     func voiceToTextData(_ userInput: String) {
-        self.responseList.text = ""
+
         print("Voice to text input \(userInput)")
         self.textViewField.text = userInput
+        self.responseArr.append(userInput)
+        self.activityIndicator.startAnimating()
         sendMessage()
         
     }
@@ -129,3 +214,39 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
 }
 
 
+extension ViewController: UITableViewDelegate,UITableViewDataSource {
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return responseArr.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ResponseTableViewCell", for: indexPath) as? ResponseTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        cell.profilePic.layer.cornerRadius = cell.profilePic.frame.height / 2
+        
+        cell.responseLabel.text = responseArr[indexPath.row]
+        cell.responseLabel.textColor = UIColor.white
+        
+        if indexPath.row % 2 == 0 {
+            cell.nameLbl.text = "You"
+            cell.profilePic.tintColor = UIColor.init(hex: "4595AA")
+            cell.profilePic.image = UIImage(systemName: "person.crop.circle.dashed")
+        }else {
+            cell.nameLbl.text = "MynBot"
+            cell.profilePic.tintColor = UIColor.red
+            cell.profilePic.image = UIImage(named: "logo")
+            
+        }
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+}
