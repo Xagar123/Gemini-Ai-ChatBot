@@ -205,6 +205,10 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     
     //MARK: - VoiceToText Delegate
     func voiceToTextData(_ userInput: String) {
+        
+        if userInput == " " {
+            return
+        }
 
         print("Voice to text input \(userInput)")
         self.textViewField.text = userInput
