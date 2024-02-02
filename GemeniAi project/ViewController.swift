@@ -89,11 +89,11 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                     self.activityIndicator.stopAnimating()
                     self.view.isUserInteractionEnabled = true
                     self.textViewField.text = ""
-                    self.receiveMessage(sender: "AI Bot", message: text)
+                    self.receiveMessage(sender: "AI", message: text)
 //                    self.aiResponse = text
                     print(text)
                     self.sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
-                    self.responseArr.append(text)
+//                    self.responseArr.append(text)
                     self.isMicEnable = true
 //                    self.botView.isHidden = true
                     self.tableView.isHidden = false
@@ -146,12 +146,47 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     @IBAction func sendBtnTapped(_ sender: UIButton) {
         print(textViewField.text!)
         
-        
-        Task{
-            do{
-                
-//                var prompt = "Given user input, you are a travel AI tasked with extracting the 'To' and 'From' location names in the format 'To:' and 'From:'. If the user misplaces either word, refactor it accordingly.and take the first place, If a location is missing, set it as 'N/A'. Note that if the user enters 'I want to go to or from [from place]', if To location is missing then then return in To:N/A and From: .extrct the number of day or Date of trip and give me in this Day: or Date: formate my user input is \(textViewField.text)"
-                let prompt = """
+        if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") && (TravelInfo.date != "N/A") {
+            
+            self.view.isUserInteractionEnabled = true
+            self.textViewField.text = ""
+            let customText = "Good to go! Let's start planning your trip."
+            self.receiveMessage(sender: "AI", message: customText)
+            
+//        }
+//        if (TravelInfo.toLocation == "N/A") || (TravelInfo.fromLocation == "N/A") || (TravelInfo.duration != "N/A") || (TravelInfo.date == "N/A"){
+//            
+//            // Data is missing, prompt for missing information
+//            var customText = "I need some additional information. "
+//            self.view.isUserInteractionEnabled = true
+//            self.textViewField.text = ""
+//            
+//            if TravelInfo.toLocation == "N/A" {
+//                customText += "Where would you like to go? "
+//            }
+//            
+//            if TravelInfo.fromLocation == "N/A" {
+//                customText += "Where are you departing from? "
+//            }
+//            
+//            if TravelInfo.duration == "N/A" {
+//                customText += "How long will you stay there? "
+//            }
+//            
+//            if TravelInfo.date == "N/A" {
+//                customText += "When are you planning to go? "
+//            }
+//            
+//            self.receiveMessage(sender: "AI", message: customText)
+//            
+//        
+        }else {
+            
+            
+            Task{
+                do{
+                    
+                    let prompt = """
                 Given user input, you are a travel AI tasked with extracting the 'To' and 'From' location names in the format 'To:' and 'From:'.
                 If the user misplaces either word, refactor it accordingly and take the first place. If a location is missing, set it as 'N/A'.
                 Note that if the user enters 'I want to go to or from [from place]', if To location is missing then return To:N/A and From:.
@@ -161,64 +196,134 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                 or if he give only staring date then calculate the remaning days and give both in formate Date:
                 . My user input is \(textViewField.text)
                 """
-//                let response = try await model.generateContent(prompt)
-//                guard let text = response.text else {
-//                    textViewField.text = "Sorry, I could not process that. InPlease try again"
-//                    return
-//                }
-//                let aiResponse = text
-//
-//                // Find the index of "To:" and "From:"
-//                if let toRange = aiResponse.range(of: "To:"),
-//                   let fromRange = aiResponse.range(of: "From:") {
-//
-//                    // Extract the substrings after "To:" and "From:"
-//                    let toLocation = aiResponse[toRange.upperBound..<fromRange.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines)
-//                    let fromLocation = aiResponse[fromRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-//
-//                    print("To:", toLocation)
-//                    print("From:", fromLocation)
-//                }
+                    
+                    let response = try await model.generateContent(prompt)
+                    guard let text = response.text else {
+                        textViewField.text = "Sorry, I could not process that. Please try again"
+                        return
+                    }
+                    let aiResponse = text
+                    
+                    if let toRange = aiResponse.range(of: "To:") {
+                        // If "To:" is found, extract the substring after "To:"
+                        let startIndex = toRange.upperBound
+                        var endIndex: String.Index
 
-                let response = try await model.generateContent(prompt)
-                guard let text = response.text else {
-                    textViewField.text = "Sorry, I could not process that. Please try again"
-                    return
+                        if let fromRange = aiResponse.range(of: "From:", range: startIndex..<aiResponse.endIndex) {
+                            // If "From:" is found after "To:", extract substring between "To:" and "From:"
+                            endIndex = fromRange.lowerBound
+                        } else {
+                            // If "From:" is not found after "To:", extract substring from "To:" to end of string
+                            endIndex = aiResponse.endIndex
+                        }
+
+                        TravelInfo.toLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                    } else {
+                        // If "To:" is not found, set default value
+                        TravelInfo.toLocation = "N/A"
+                    }
+
+                    if let fromRange = aiResponse.range(of: "From:") {
+                        let startIndex = fromRange.upperBound
+                        var endIndex: String.Index
+                        
+                        if let durationRange = aiResponse.range(of: "Duration:", range: startIndex..<aiResponse.endIndex) {
+                            // If "Duration:" is found after "From:", extract substring between "From:" and "Duration:"
+                            endIndex = durationRange.lowerBound
+                        } else {
+                            // If "Duration:" is not found after "From:", extract substring from "From:" to end of string
+                            endIndex = aiResponse.endIndex
+                        }
+                        
+                        TravelInfo.fromLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                    } else {
+                        // If "From:" is not found, set default value
+                        TravelInfo.fromLocation = "N/A"
+                    }
+
+
+                    if let durationRange = aiResponse.range(of: "Duration:") {
+                        // If "Duration:" is found, extract the substring after "Duration:"
+                        let startIndex = durationRange.upperBound
+                        var endIndex: String.Index
+
+                        if let dateRange = aiResponse.range(of: "Date:", range: startIndex..<aiResponse.endIndex) {
+                            // If "Date:" is found after "Duration:", extract substring between "Duration:" and "Date:"
+                            endIndex = dateRange.lowerBound
+                        } else {
+                            // If "Date:" is not found after "Duration:", extract substring from "Duration:" to end of string
+                            endIndex = aiResponse.endIndex
+                        }
+
+                        TravelInfo.duration = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                    } else {
+                        // If "Duration:" is not found, set default value
+                        TravelInfo.duration = "N/A"
+                    }
+
+                    if let dateRange = aiResponse.range(of: "Date:") {
+                        // If "Date:" is found, extract the substring after "Date:"
+                        let startIndex = dateRange.upperBound
+                        let endIndex = aiResponse.endIndex
+
+                        TravelInfo.date = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                    } else {
+                        // If "Date:" is not found, set default value
+                        TravelInfo.date = "N/A"
+                    }
+
+                    
+                    print("To:", TravelInfo.toLocation ?? "N/A")
+                    print("From:", TravelInfo.fromLocation ?? "N/A")
+                    print("Duration:", TravelInfo.duration ?? "N/A")
+                    print("Date:", TravelInfo.date ?? "N/A")
+                    
+                  
+                    self.activityIndicator.stopAnimating()
+                    
+                    if TravelInfo.toLocation != "N/A" && TravelInfo.fromLocation != "N/A" && TravelInfo.duration != "N/A" && TravelInfo.date != "N/A" {
+                        // All data is available
+                        var customText = "Great! I have all the necessary information. What would you like to explore in \(TravelInfo.toLocation!)?"
+                        self.view.isUserInteractionEnabled = true
+                        self.textViewField.text = ""
+                        self.receiveMessage(sender: "AI", message: customText)
+                        
+                    } else if TravelInfo.toLocation == "N/A" && TravelInfo.fromLocation == "N/A" && TravelInfo.duration == "N/A" && TravelInfo.date == "N/A" {
+                        // All data is missing
+                        let customText = "I'm your travel buddy AI! Let's plan your trip together. Where would you like to go?"
+                        self.view.isUserInteractionEnabled = true
+                        self.textViewField.text = ""
+                        self.receiveMessage(sender: "AI", message: customText)
+                        
+                    } else {
+                        // Data is missing, prompt for missing information
+                        var customText = "I need some additional information. "
+                        self.view.isUserInteractionEnabled = true
+                        self.textViewField.text = ""
+                        
+                        if TravelInfo.toLocation == "N/A" {
+                            customText += "Where would you like to go? "
+                        }
+                        
+                        if TravelInfo.fromLocation == "N/A" {
+                            customText += "Where are you departing from? "
+                        }
+                        
+                        if TravelInfo.duration == "N/A" {
+                            customText += "How long will you stay there? "
+                        }
+                        
+                        if TravelInfo.date == "N/A" {
+                            customText += "When are you planning to go? "
+                        }
+                        
+                        self.receiveMessage(sender: "AI", message: customText)
+                    }
+
+                } catch {
+                    self.activityIndicator.stopAnimating()
+                    print(error.localizedDescription)
                 }
-                let aiResponse = text
-
-//                var toLocation: String? = "N/A"
-//                var fromLocation: String? = "N/A"
-//                var duration: String? = "N/A"
-//                var date: String? = "N/A"
-
-                // Find the index of "To:", "From:", "Duration:", and "Date:"
-                if let toRange = aiResponse.range(of: "To:"),
-                   let fromRange = aiResponse.range(of: "From:") {
-
-                    // Extract the substrings after "To:" and "From:"
-                    TravelInfo.toLocation = aiResponse[toRange.upperBound..<fromRange.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines)
-                    TravelInfo.fromLocation = aiResponse[fromRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-                }
-
-                if let durationRange = aiResponse.range(of: "Duration:") {
-                    // Extract the substring after "Duration:"
-                    TravelInfo.duration = aiResponse[durationRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-                }
-
-                if let dateRange = aiResponse.range(of: "Date:") {
-                    // Extract the substring after "Date:"
-                    TravelInfo.date = aiResponse[dateRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
-                }
-
-                print("To:", TravelInfo.toLocation ?? "N/A")
-                print("From:", TravelInfo.fromLocation ?? "N/A")
-                print("Duration:", TravelInfo.duration ?? "N/A")
-                print("Date:", TravelInfo.date ?? "N/A")
-
-            } catch {
-//                aiResponse = "Something went wrong.. \n\(error.localizedDescription)"
-                print(error.localizedDescription)
             }
         }
 
@@ -248,7 +353,9 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
 
                 }
 //                self.responseArr.append(self.textViewField.text)
-                self.sendMessage()
+//                self.sendMessage()
+                
+                
                 
                 IQKeyboardManager.shared.resignFirstResponder()
             }
