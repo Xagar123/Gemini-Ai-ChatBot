@@ -16,7 +16,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     
     let model = GenerativeModel(name: "gemini-pro", apiKey: "AIzaSyCMRaH7pJV0r5PbH6yGmNn0HgWNK2_2f4Q")
     var inputText = ""
-    var aiResponse = "Hello! how can i help you today"
+//    var aiResponse = "Hello! how can i help you today"
+    var chatMessages: [(sender: String, message: String)] = []
     
     
     @IBOutlet weak var textViewField: UITextView!
@@ -75,10 +76,11 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     
     //MARK: - Fetch Response
     func sendMessage() {
-        aiResponse = ""
+//        aiResponse = ""
         Task {
             do{
                 let response = try await model.generateContent(textViewField.text)
+//                let response = try await model.startChat(history: <#T##[ModelContent]#>)
                 guard let text = response.text else {
                     textViewField.text = "Sorry, I could not process that. InPlease try again"
                     return
@@ -87,7 +89,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                     self.activityIndicator.stopAnimating()
                     self.view.isUserInteractionEnabled = true
                     self.textViewField.text = ""
-                    self.aiResponse = text
+                    self.receiveMessage(sender: "AI Bot", message: text)
+//                    self.aiResponse = text
                     print(text)
                     self.sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
                     self.responseArr.append(text)
@@ -97,12 +100,31 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                     self.textViewHC.constant = 50
                     IQKeyboardManager.shared.resignFirstResponder()
                     self.tableView.reloadData()
+                    self.scrollToBottom()
                 }
 
                 
             } catch {
-                aiResponse = "Something went wrong.. \n\(error.localizedDescription)"
+//                aiResponse = "Something went wrong.. \n\(error.localizedDescription)"
+                print(error.localizedDescription)
             }
+        }
+    }
+    
+    func sendMessage(sender: String, message: String) {
+        chatMessages.append((sender, message))
+        tableView.reloadData()
+        scrollToBottom()
+    }
+    
+    func receiveMessage(sender: String, message: String) {
+        sendMessage(sender: sender, message: message)
+    }
+    
+    func scrollToBottom() {
+        if chatMessages.count > 0 {
+            let indexPath = IndexPath(row: chatMessages.count - 1, section: 0)
+            tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }
     
@@ -124,6 +146,84 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     @IBAction func sendBtnTapped(_ sender: UIButton) {
         print(textViewField.text!)
         
+        
+        Task{
+            do{
+                
+//                var prompt = "Given user input, you are a travel AI tasked with extracting the 'To' and 'From' location names in the format 'To:' and 'From:'. If the user misplaces either word, refactor it accordingly.and take the first place, If a location is missing, set it as 'N/A'. Note that if the user enters 'I want to go to or from [from place]', if To location is missing then then return in To:N/A and From: .extrct the number of day or Date of trip and give me in this Day: or Date: formate my user input is \(textViewField.text)"
+                let prompt = """
+                Given user input, you are a travel AI tasked with extracting the 'To' and 'From' location names in the format 'To:' and 'From:'.
+                If the user misplaces either word, refactor it accordingly and take the first place. If a location is missing, set it as 'N/A'.
+                Note that if the user enters 'I want to go to or from [from place]', if To location is missing then return To:N/A and From:.
+                extract this extra data if user provide
+                if user enter his duration example for number of days then formate in Duration:
+                and if user gives number of days then formate in form of Date:
+                or if he give only staring date then calculate the remaning days and give both in formate Date:
+                . My user input is \(textViewField.text)
+                """
+//                let response = try await model.generateContent(prompt)
+//                guard let text = response.text else {
+//                    textViewField.text = "Sorry, I could not process that. InPlease try again"
+//                    return
+//                }
+//                let aiResponse = text
+//
+//                // Find the index of "To:" and "From:"
+//                if let toRange = aiResponse.range(of: "To:"),
+//                   let fromRange = aiResponse.range(of: "From:") {
+//
+//                    // Extract the substrings after "To:" and "From:"
+//                    let toLocation = aiResponse[toRange.upperBound..<fromRange.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines)
+//                    let fromLocation = aiResponse[fromRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+//
+//                    print("To:", toLocation)
+//                    print("From:", fromLocation)
+//                }
+
+                let response = try await model.generateContent(prompt)
+                guard let text = response.text else {
+                    textViewField.text = "Sorry, I could not process that. Please try again"
+                    return
+                }
+                let aiResponse = text
+
+//                var toLocation: String? = "N/A"
+//                var fromLocation: String? = "N/A"
+//                var duration: String? = "N/A"
+//                var date: String? = "N/A"
+
+                // Find the index of "To:", "From:", "Duration:", and "Date:"
+                if let toRange = aiResponse.range(of: "To:"),
+                   let fromRange = aiResponse.range(of: "From:") {
+
+                    // Extract the substrings after "To:" and "From:"
+                    TravelInfo.toLocation = aiResponse[toRange.upperBound..<fromRange.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines)
+                    TravelInfo.fromLocation = aiResponse[fromRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+
+                if let durationRange = aiResponse.range(of: "Duration:") {
+                    // Extract the substring after "Duration:"
+                    TravelInfo.duration = aiResponse[durationRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+
+                if let dateRange = aiResponse.range(of: "Date:") {
+                    // Extract the substring after "Date:"
+                    TravelInfo.date = aiResponse[dateRange.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+
+                print("To:", TravelInfo.toLocation ?? "N/A")
+                print("From:", TravelInfo.fromLocation ?? "N/A")
+                print("Duration:", TravelInfo.duration ?? "N/A")
+                print("Date:", TravelInfo.date ?? "N/A")
+
+            } catch {
+//                aiResponse = "Something went wrong.. \n\(error.localizedDescription)"
+                print(error.localizedDescription)
+            }
+        }
+
+       
+        
         if isMicEnable {
 //            self.loadingGif.isHidden = false
 //            self.botView.isHidden = true
@@ -142,8 +242,14 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                 self.view.isUserInteractionEnabled = false
 //                self.tableView.isHidden = true
 //                self.botView.isHidden = false
-                self.responseArr.append(self.textViewField.text)
+                if let userMessage = self.textViewField.text, !userMessage.isEmpty {
+                    self.sendMessage(sender: "User", message: userMessage)
+//                    self.textViewField.text = nil
+
+                }
+//                self.responseArr.append(self.textViewField.text)
                 self.sendMessage()
+                
                 IQKeyboardManager.shared.resignFirstResponder()
             }
             
@@ -226,7 +332,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return responseArr.count
+        return chatMessages.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -237,19 +343,23 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         
         cell.profilePic.layer.cornerRadius = cell.profilePic.frame.height / 2
         
-        cell.responseLabel.text = responseArr[indexPath.row]
+        
         cell.responseLabel.textColor = UIColor.white
         
-        if indexPath.row % 2 == 0 {
+        let (sender, message) = chatMessages[indexPath.row]
+
+        if sender == "User" {
             cell.nameLbl.text = "You"
             cell.profilePic.tintColor = UIColor.init(hex: "4595AA")
             cell.profilePic.image = UIImage(systemName: "person.crop.circle.dashed")
-        }else {
+            cell.responseLabel.text = message
+        } else {
             cell.nameLbl.text = "MynBot"
             cell.profilePic.tintColor = UIColor.red
             cell.profilePic.image = UIImage(named: "logo")
-            
+            cell.responseLabel.text = message
         }
+        
         return cell
     }
     

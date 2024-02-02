@@ -28,6 +28,7 @@
 		FA7ECC1C2B5E410C002681C3 /* CHATBOT.gif in Resources */ = {isa = PBXBuildFile; fileRef = FA7ECC1B2B5E410C002681C3 /* CHATBOT.gif */; };
 		FA7ECC1F2B5E4201002681C3 /* hacking.gif in Resources */ = {isa = PBXBuildFile; fileRef = FA7ECC1D2B5E4201002681C3 /* hacking.gif */; };
 		FA7ECC202B5E4201002681C3 /* star.gif in Resources */ = {isa = PBXBuildFile; fileRef = FA7ECC1E2B5E4201002681C3 /* star.gif */; };
+		FA89A72C2B6CCE5D00FDB8B0 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA89A72B2B6CCE5D00FDB8B0 /* Helper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		FA7ECC1B2B5E410C002681C3 /* CHATBOT.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = CHATBOT.gif; sourceTree = "<group>"; };
 		FA7ECC1D2B5E4201002681C3 /* hacking.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = hacking.gif; sourceTree = "<group>"; };
 		FA7ECC1E2B5E4201002681C3 /* star.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = star.gif; sourceTree = "<group>"; };
+		FA89A72B2B6CCE5D00FDB8B0 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				FA4556482B58FF7000286D90 /* AppDelegate.swift */,
 				FA45564A2B58FF7000286D90 /* SceneDelegate.swift */,
 				FA45564C2B58FF7000286D90 /* ViewController.swift */,
+				FA89A72B2B6CCE5D00FDB8B0 /* Helper.swift */,
 				FA7ECC152B5E3102002681C3 /* ResponseTableViewCell.swift */,
 				FA7ECC162B5E3102002681C3 /* ResponseTableViewCell.xib */,
 				0E7774032B592AFD00A3EEE5 /* voiceToTextViewController.swift */,
@@ -265,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA45564D2B58FF7000286D90 /* ViewController.swift in Sources */,
+				FA89A72C2B6CCE5D00FDB8B0 /* Helper.swift in Sources */,
 				FA4556492B58FF7000286D90 /* AppDelegate.swift in Sources */,
 				FA4556602B592CF800286D90 /* API_KEY.swift in Sources */,
 				FA45564B2B58FF7000286D90 /* SceneDelegate.swift in Sources */,
