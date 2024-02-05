@@ -17,7 +17,9 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     let model = GenerativeModel(name: "gemini-pro", apiKey: "AIzaSyCMRaH7pJV0r5PbH6yGmNn0HgWNK2_2f4Q")
     var inputText = ""
 //    var aiResponse = "Hello! how can i help you today"
-    var chatMessages: [(sender: String, message: String)] = []
+//    var chatMessages: [(sender: String, message: String)] = []
+    var chatService = ChatService()
+    
     
     
     @IBOutlet weak var textViewField: UITextView!
@@ -35,6 +37,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     
     var responseArr = [String]()
     var isMicEnable = true
+    
+    var initialExecution = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,6 +75,16 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         // Add tap gesture recognizer to dismiss keyboard
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
+        
+        let initialText = "👋 Hello there! I'm your trusty Travel Buddy AI, here to make your journey smooth and delightful!"
+       
+        
+//        chatService.startingSendMessage("", chatRole: .model) {
+//            DispatchQueue.main.async {
+//                self.chatService.messages.append(.init(role: .model, messgae: initialText))
+//                self.tableView.reloadData()
+//            }
+//        }
         
     }
     
@@ -112,7 +126,11 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     }
     
     func sendMessage(sender: String, message: String) {
-        chatMessages.append((sender, message))
+//        chatMessages.append((sender, message))
+        chatService.messages.append(.init(role: .user, messgae: message))
+        chatService.sendMessage(message, chatRole: .model) {
+//
+        }
         tableView.reloadData()
         scrollToBottom()
     }
@@ -122,8 +140,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     }
     
     func scrollToBottom() {
-        if chatMessages.count > 0 {
-            let indexPath = IndexPath(row: chatMessages.count - 1, section: 0)
+        if chatService.messages.count > 0 {
+            let indexPath = IndexPath(row: chatService.messages.count - 1, section: 0)
             tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }
@@ -143,225 +161,44 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         }
     }
     
+    
     @IBAction func sendBtnTapped(_ sender: UIButton) {
         print(textViewField.text!)
         
-        if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") && (TravelInfo.date != "N/A") {
+        switch chatService.processState {
             
-            self.view.isUserInteractionEnabled = true
-            self.textViewField.text = ""
-            let customText = "Good to go! Let's start planning your trip."
-            self.receiveMessage(sender: "AI", message: customText)
+        case .stageOne:
+            guard let message = textViewField.text, !message.isEmpty else { return }
             
-//        }
-//        if (TravelInfo.toLocation == "N/A") || (TravelInfo.fromLocation == "N/A") || (TravelInfo.duration != "N/A") || (TravelInfo.date == "N/A"){
-//            
-//            // Data is missing, prompt for missing information
-//            var customText = "I need some additional information. "
-//            self.view.isUserInteractionEnabled = true
-//            self.textViewField.text = ""
-//            
-//            if TravelInfo.toLocation == "N/A" {
-//                customText += "Where would you like to go? "
-//            }
-//            
-//            if TravelInfo.fromLocation == "N/A" {
-//                customText += "Where are you departing from? "
-//            }
-//            
-//            if TravelInfo.duration == "N/A" {
-//                customText += "How long will you stay there? "
-//            }
-//            
-//            if TravelInfo.date == "N/A" {
-//                customText += "When are you planning to go? "
-//            }
-//            
-//            self.receiveMessage(sender: "AI", message: customText)
-//            
-//        
-        }else {
-            
-            
-            Task{
-                do{
-                    
-                    let prompt = """
-                Given user input, you are a travel AI tasked with extracting the 'To' and 'From' location names in the format 'To:' and 'From:'.
-                If the user misplaces either word, refactor it accordingly and take the first place. If a location is missing, set it as 'N/A'.
-                Note that if the user enters 'I want to go to or from [from place]', if To location is missing then return To:N/A and From:.
-                extract this extra data if user provide
-                if user enter his duration example for number of days then formate in Duration:
-                and if user gives number of days then formate in form of Date:
-                or if he give only staring date then calculate the remaning days and give both in formate Date:
-                . My user input is \(textViewField.text)
-                """
-                    
-                    let response = try await model.generateContent(prompt)
-                    guard let text = response.text else {
-                        textViewField.text = "Sorry, I could not process that. Please try again"
-                        return
+            if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") {
+                chatService.stageFirstConfirm(message, chatRole: .model) { [weak self] in
+                    // Update UI on the main thread after receiving response
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                        self?.scrollToBottom() 
                     }
-                    let aiResponse = text
-                    
-                    if let toRange = aiResponse.range(of: "To:") {
-                        // If "To:" is found, extract the substring after "To:"
-                        let startIndex = toRange.upperBound
-                        var endIndex: String.Index
-
-                        if let fromRange = aiResponse.range(of: "From:", range: startIndex..<aiResponse.endIndex) {
-                            // If "From:" is found after "To:", extract substring between "To:" and "From:"
-                            endIndex = fromRange.lowerBound
-                        } else {
-                            // If "From:" is not found after "To:", extract substring from "To:" to end of string
-                            endIndex = aiResponse.endIndex
-                        }
-
-                        TravelInfo.toLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
-                    } else {
-                        // If "To:" is not found, set default value
-                        TravelInfo.toLocation = "N/A"
-                    }
-
-                    if let fromRange = aiResponse.range(of: "From:") {
-                        let startIndex = fromRange.upperBound
-                        var endIndex: String.Index
-                        
-                        if let durationRange = aiResponse.range(of: "Duration:", range: startIndex..<aiResponse.endIndex) {
-                            // If "Duration:" is found after "From:", extract substring between "From:" and "Duration:"
-                            endIndex = durationRange.lowerBound
-                        } else {
-                            // If "Duration:" is not found after "From:", extract substring from "From:" to end of string
-                            endIndex = aiResponse.endIndex
-                        }
-                        
-                        TravelInfo.fromLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
-                    } else {
-                        // If "From:" is not found, set default value
-                        TravelInfo.fromLocation = "N/A"
-                    }
-
-
-                    if let durationRange = aiResponse.range(of: "Duration:") {
-                        // If "Duration:" is found, extract the substring after "Duration:"
-                        let startIndex = durationRange.upperBound
-                        var endIndex: String.Index
-
-                        if let dateRange = aiResponse.range(of: "Date:", range: startIndex..<aiResponse.endIndex) {
-                            // If "Date:" is found after "Duration:", extract substring between "Duration:" and "Date:"
-                            endIndex = dateRange.lowerBound
-                        } else {
-                            // If "Date:" is not found after "Duration:", extract substring from "Duration:" to end of string
-                            endIndex = aiResponse.endIndex
-                        }
-
-                        TravelInfo.duration = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
-                    } else {
-                        // If "Duration:" is not found, set default value
-                        TravelInfo.duration = "N/A"
-                    }
-
-                    if let dateRange = aiResponse.range(of: "Date:") {
-                        // If "Date:" is found, extract the substring after "Date:"
-                        let startIndex = dateRange.upperBound
-                        let endIndex = aiResponse.endIndex
-
-                        TravelInfo.date = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
-                    } else {
-                        // If "Date:" is not found, set default value
-                        TravelInfo.date = "N/A"
-                    }
-
-                    
-                    print("To:", TravelInfo.toLocation ?? "N/A")
-                    print("From:", TravelInfo.fromLocation ?? "N/A")
-                    print("Duration:", TravelInfo.duration ?? "N/A")
-                    print("Date:", TravelInfo.date ?? "N/A")
-                    
-                  
-                    self.activityIndicator.stopAnimating()
-                    
-                    if TravelInfo.toLocation != "N/A" && TravelInfo.fromLocation != "N/A" && TravelInfo.duration != "N/A" && TravelInfo.date != "N/A" {
-                        // All data is available
-                        var customText = "Great! I have all the necessary information. What would you like to explore in \(TravelInfo.toLocation!)?"
-                        self.view.isUserInteractionEnabled = true
-                        self.textViewField.text = ""
-                        self.receiveMessage(sender: "AI", message: customText)
-                        
-                    } else if TravelInfo.toLocation == "N/A" && TravelInfo.fromLocation == "N/A" && TravelInfo.duration == "N/A" && TravelInfo.date == "N/A" {
-                        // All data is missing
-                        let customText = "I'm your travel buddy AI! Let's plan your trip together. Where would you like to go?"
-                        self.view.isUserInteractionEnabled = true
-                        self.textViewField.text = ""
-                        self.receiveMessage(sender: "AI", message: customText)
-                        
-                    } else {
-                        // Data is missing, prompt for missing information
-                        var customText = "I need some additional information. "
-                        self.view.isUserInteractionEnabled = true
-                        self.textViewField.text = ""
-                        
-                        if TravelInfo.toLocation == "N/A" {
-                            customText += "Where would you like to go? "
-                        }
-                        
-                        if TravelInfo.fromLocation == "N/A" {
-                            customText += "Where are you departing from? "
-                        }
-                        
-                        if TravelInfo.duration == "N/A" {
-                            customText += "How long will you stay there? "
-                        }
-                        
-                        if TravelInfo.date == "N/A" {
-                            customText += "When are you planning to go? "
-                        }
-                        
-                        self.receiveMessage(sender: "AI", message: customText)
-                    }
-
-                } catch {
-                    self.activityIndicator.stopAnimating()
-                    print(error.localizedDescription)
                 }
-            }
-        }
-
-       
-        
-        if isMicEnable {
-//            self.loadingGif.isHidden = false
-//            self.botView.isHidden = true
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            guard let viewController = storyboard.instantiateViewController(withIdentifier: "voiceToTextViewController") as? voiceToTextViewController else { return }
-            viewController.delegate = self
-            let navVc = UINavigationController(rootViewController: viewController)
-            navVc.modalPresentationStyle = .fullScreen
-            navVc.modalTransitionStyle = .crossDissolve
-            present(navVc, animated: true)
-            
-        } else {
-//            self.loadingGif.isHidden = false
-            DispatchQueue.main.async {
-                self.activityIndicator.startAnimating()
-                self.view.isUserInteractionEnabled = false
-//                self.tableView.isHidden = true
-//                self.botView.isHidden = false
-                if let userMessage = self.textViewField.text, !userMessage.isEmpty {
-                    self.sendMessage(sender: "User", message: userMessage)
-//                    self.textViewField.text = nil
-
+                textViewField.text = ""
+            }else {
+                chatService.sendMessage(message, chatRole: .model) { [weak self] in
+                    // Update UI on the main thread after receiving response
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData() // Reload table view with new messages
+                        self?.scrollToBottom() // Optional: Scroll to bottom after adding new message
+                    }
                 }
-//                self.responseArr.append(self.textViewField.text)
-//                self.sendMessage()
-                
-                
-                
-                IQKeyboardManager.shared.resignFirstResponder()
+                chatService.messages.append(.init(role: .user, messgae: textViewField.text))
+                self.tableView.reloadData()
+                textViewField.text = ""
             }
             
+            
+            //
+        case .stageTwo:
+            print("Ready to work with stage two")
+        case .stageThree:
+            print("Ready to work with stage three")
         }
-        
     }
     
     
@@ -439,7 +276,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chatMessages.count
+        return chatService.messages.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -453,18 +290,29 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         
         cell.responseLabel.textColor = UIColor.white
         
-        let (sender, message) = chatMessages[indexPath.row]
+        let message = chatService.messages[indexPath.row]
 
-        if sender == "User" {
+//        if sender == "User" {
+//            cell.nameLbl.text = "You"
+//            cell.profilePic.tintColor = UIColor.init(hex: "4595AA")
+//            cell.profilePic.image = UIImage(systemName: "person.crop.circle.dashed")
+//            cell.responseLabel.text = message
+//        } else {
+//            cell.nameLbl.text = "MynBot"
+//            cell.profilePic.tintColor = UIColor.red
+//            cell.profilePic.image = UIImage(named: "logo")
+//            cell.responseLabel.text = message
+//        }
+        if message.role == .user {
             cell.nameLbl.text = "You"
             cell.profilePic.tintColor = UIColor.init(hex: "4595AA")
             cell.profilePic.image = UIImage(systemName: "person.crop.circle.dashed")
-            cell.responseLabel.text = message
-        } else {
+            cell.responseLabel.text = message.messgae
+        }else {
             cell.nameLbl.text = "MynBot"
             cell.profilePic.tintColor = UIColor.red
             cell.profilePic.image = UIImage(named: "logo")
-            cell.responseLabel.text = message
+            cell.responseLabel.text = message.messgae
         }
         
         return cell

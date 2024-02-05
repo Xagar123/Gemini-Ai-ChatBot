@@ -22,6 +22,7 @@
 		FA4556552B58FF7400286D90 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA4556532B58FF7400286D90 /* LaunchScreen.storyboard */; };
 		FA45565E2B58FF9F00286D90 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = FA45565D2B58FF9F00286D90 /* GoogleGenerativeAI */; };
 		FA4556602B592CF800286D90 /* API_KEY.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45565F2B592CF800286D90 /* API_KEY.swift */; };
+		FA45E1F72B6FBC9B00CB4779 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA45E1F62B6FBC9B00CB4779 /* ChatService.swift */; };
 		FA7ECC172B5E3102002681C3 /* ResponseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7ECC152B5E3102002681C3 /* ResponseTableViewCell.swift */; };
 		FA7ECC182B5E3102002681C3 /* ResponseTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA7ECC162B5E3102002681C3 /* ResponseTableViewCell.xib */; };
 		FA7ECC1A2B5E3C03002681C3 /* LiveChatbot.gif in Resources */ = {isa = PBXBuildFile; fileRef = FA7ECC192B5E3C03002681C3 /* LiveChatbot.gif */; };
@@ -50,6 +51,7 @@
 		FA4556562B58FF7400286D90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA45565F2B592CF800286D90 /* API_KEY.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API_KEY.swift; sourceTree = "<group>"; };
 		FA4556612B592F2600286D90 /* GenerativeAl-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GenerativeAl-Info.plist"; sourceTree = "<group>"; };
+		FA45E1F62B6FBC9B00CB4779 /* ChatService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		FA7ECC152B5E3102002681C3 /* ResponseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewCell.swift; sourceTree = "<group>"; };
 		FA7ECC162B5E3102002681C3 /* ResponseTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResponseTableViewCell.xib; sourceTree = "<group>"; };
 		FA7ECC192B5E3C03002681C3 /* LiveChatbot.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = LiveChatbot.gif; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 				FA4556482B58FF7000286D90 /* AppDelegate.swift */,
 				FA45564A2B58FF7000286D90 /* SceneDelegate.swift */,
 				FA45564C2B58FF7000286D90 /* ViewController.swift */,
+				FA45E1F62B6FBC9B00CB4779 /* ChatService.swift */,
 				FA89A72B2B6CCE5D00FDB8B0 /* Helper.swift */,
 				FA7ECC152B5E3102002681C3 /* ResponseTableViewCell.swift */,
 				FA7ECC162B5E3102002681C3 /* ResponseTableViewCell.xib */,
@@ -272,6 +275,7 @@
 				FA4556492B58FF7000286D90 /* AppDelegate.swift in Sources */,
 				FA4556602B592CF800286D90 /* API_KEY.swift in Sources */,
 				FA45564B2B58FF7000286D90 /* SceneDelegate.swift in Sources */,
+				FA45E1F72B6FBC9B00CB4779 /* ChatService.swift in Sources */,
 				FA7ECC172B5E3102002681C3 /* ResponseTableViewCell.swift in Sources */,
 				0E7774042B592AFD00A3EEE5 /* voiceToTextViewController.swift in Sources */,
 			);
