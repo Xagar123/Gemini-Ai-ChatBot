@@ -170,7 +170,7 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         case .stageOne:
             guard let message = textViewField.text, !message.isEmpty else { return }
             
-            if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") {
+            if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") && (!chatService.isUpdate) {
                 chatService.stageFirstConfirm(message, chatRole: .model) { [weak self] in
                     // Update UI on the main thread after receiving response
                     DispatchQueue.main.async {
@@ -178,6 +178,8 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
                         self?.scrollToBottom() 
                     }
                 }
+                chatService.messages.append(.init(role: .user, messgae: textViewField.text))
+                self.tableView.reloadData()
                 textViewField.text = ""
             }else {
                 chatService.sendMessage(message, chatRole: .model) { [weak self] in

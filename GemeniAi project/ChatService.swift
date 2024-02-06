@@ -25,6 +25,8 @@ class ChatService {
     let model = GenerativeModel(name: "gemini-pro", apiKey: "AIzaSyCMRaH7pJV0r5PbH6yGmNn0HgWNK2_2f4Q")
     var processState: UserState = .stageOne
     
+    var isUpdate:Bool = false
+    
     func sendMessage(_ message: String,chatRole:ChatRole,completion: @escaping () -> Void) {
         
         if (chat == nil) {
@@ -211,7 +213,9 @@ class ChatService {
         Task {
                do {
                    let prompt = """
-                    form the user input your need to check if he say yes then give output happy to help you could u please suggest me your interest or else if he say no i want to change or anything like changing details then give output sure what you want to change but if he say yes don't say anything about changing anydetails since he confirm already
+                    You're designing a response system based on user input. If the user expresses satisfaction by saying "Yes, I like it," the system should respond with "Yes:1". However, if the user indicates a desire to modify details by saying "I want to change some details," the system should respond with "No:0". Handle both scenarios accordingly. If the user's response doesn't fit either case, return "N/A".
+
+                    \(message)
                     """
                    
 
@@ -222,67 +226,67 @@ class ChatService {
                        return
                    }
                    
-                   //***
+                   var yesDetailVal: String?
+                   var noDetailVal: String?
                    
-//                   Task{
-//                       do{
-//                           
-//                          let prompt = " You need to understand user text and if he say yes i like or yes then formate it in YES:1 and if he say no i want to chnage then or just he say no then formate it in NO:0\(message)"
-//                           
-//                           let response = try await model.generateContent(prompt)
-//                           guard let text = response.text else {
-//                               print("Something went wrong")
-//                               return
-//                           }
-//                           let aiResponse = text
-//                           
-//                           DispatchQueue.main.async {
-//                              
-//                               print("To:", TravelInfo.toLocation ?? "N/A")
-//                               print("From:", TravelInfo.fromLocation ?? "N/A")
-//                               print("Duration:", TravelInfo.duration ?? "N/A")
-//                               print("Date:", TravelInfo.date ?? "N/A")
-//                               
-//                               TravelInfo.confirmDetails = aiResponse
-//                               print(TravelInfo.confirmDetails)
-//                               
-//                               if (TravelInfo.confirmDetails == "YES:1") || (TravelInfo.confirmDetails == "YES: 1") {
-//                                   self.processState = .stageTwo
-//                               }else {
-//                                   self.processState = .stageOne
-//                               }
-//                               
-//                           }
-//                               
-//                           } catch {
-////                               self.activityIndicator.stopAnimating()
-//                               print(error.localizedDescription)
-//                           }
-//                       }
+                   // Define regular expressions to match "Yes:1" and "No:0" patterns
+                   let yesRegex = try! NSRegularExpression(pattern: "(Yes:1)", options: .caseInsensitive)
+                   let noRegex = try! NSRegularExpression(pattern: "(No:0)", options: .caseInsensitive)
 
-                   var extractedText = ""
-
-                   if message.lowercased().contains("yes") {
-                       extractedText = "Yes"
-                   } else if message.lowercased().contains("no") {
-                       extractedText = "No"
+                   // Match "Yes:1"
+                   if let yesMatch = yesRegex.firstMatch(in: text, options: [], range: NSRange(text.startIndex..., in: text)) {
+                       let yesDetail = String(text[Range(yesMatch.range, in: text)!])
+                       yesDetailVal = yesDetail
+                       print("Extracted Yes Detail: \(yesDetail)")
+                   } else {
+                       print("No 'Yes:1' detail found")
                    }
 
-                   let formattedResult = "\(extractedText)"
-                   if formattedResult == "Yes" {
+                   // Match "No:0"
+                   if let noMatch = noRegex.firstMatch(in: text, options: [], range: NSRange(text.startIndex..., in: text)) {
+                       let noDetail = String(text[Range(noMatch.range, in: text)!])
+                       print("Extracted No Detail: \(noDetail)")
+                       noDetailVal = noDetail
+                   } else {
+                       print("No 'No:0' detail found")
+                   }
+                   
+                   if yesDetailVal == "Yes:1" {
+                       /*
+                        Let's move to next stage since user confirm all his details
+                        */
                        self.processState = .stageTwo
-                   }else {
+                       let textMessage = "Let our AI know what kind of things you’d like to do on your trip!"
+                       messages.append(.init(role: .model, messgae: textMessage))
+                       self.isUpdate = false
+                   } else {
+                       /*
+                        Moving back to stage 1 as user want to update his details
+                        */
                        self.processState = .stageOne
+
+                       Task {
+                           do {
+                               let prompt = "Asked user what details he want to update"
+                               let response = try await chat?.sendMessage(prompt)
+                               
+                               guard let text = response?.text else {
+                                   messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                                   return
+                               }
+                               
+                               print(text)
+                               messages.append(.init(role: .model, messgae: text))
+                               self.isUpdate = true
+                               completion()
+                              
+                           }
+                           catch {
+                               messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                           }
+                       }
                    }
-                   print(formattedResult)
-                   
-                   print(text)
-                   if chatRole == .user {
-                       messages.append(.init(role: .user, messgae: text))
-                   }else {
-                       messages.append(.init(role: .model, messgae: text))
-                   }
-                   
+
                    completion() // Call completion after appending message
                }
                catch {
