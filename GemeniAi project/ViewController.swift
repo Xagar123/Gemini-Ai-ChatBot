@@ -76,7 +76,7 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
         
-        let initialText = "👋 Hello there! I'm your trusty Travel Buddy AI, here to make your journey smooth and delightful!"
+//        let initialText = "👋 Hello there! I'm your trusty Travel Buddy AI, here to make your journey smooth and delightful!"
        
         
 //        chatService.startingSendMessage("", chatRole: .model) {
@@ -89,41 +89,41 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
     }
     
     //MARK: - Fetch Response
-    func sendMessage() {
-//        aiResponse = ""
-        Task {
-            do{
-                let response = try await model.generateContent(textViewField.text)
-//                let response = try await model.startChat(history: <#T##[ModelContent]#>)
-                guard let text = response.text else {
-                    textViewField.text = "Sorry, I could not process that. InPlease try again"
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.activityIndicator.stopAnimating()
-                    self.view.isUserInteractionEnabled = true
-                    self.textViewField.text = ""
-                    self.receiveMessage(sender: "AI", message: text)
-//                    self.aiResponse = text
-                    print(text)
-                    self.sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
-//                    self.responseArr.append(text)
-                    self.isMicEnable = true
-//                    self.botView.isHidden = true
-                    self.tableView.isHidden = false
-                    self.textViewHC.constant = 50
-                    IQKeyboardManager.shared.resignFirstResponder()
-                    self.tableView.reloadData()
-                    self.scrollToBottom()
-                }
-
-                
-            } catch {
-//                aiResponse = "Something went wrong.. \n\(error.localizedDescription)"
-                print(error.localizedDescription)
-            }
-        }
-    }
+//    func sendMessage() {
+////        aiResponse = ""
+//        Task {
+//            do{
+//                let response = try await model.generateContent(textViewField.text)
+////                let response = try await model.startChat(history: <#T##[ModelContent]#>)
+//                guard let text = response.text else {
+//                    textViewField.text = "Sorry, I could not process that. InPlease try again"
+//                    return
+//                }
+//                DispatchQueue.main.async {
+//                    self.activityIndicator.stopAnimating()
+//                    self.view.isUserInteractionEnabled = true
+//                    self.textViewField.text = ""
+//                    self.receiveMessage(sender: "AI", message: text)
+////                    self.aiResponse = text
+//                    print(text)
+//                    self.sendAndMicBtnIcon.image = UIImage(systemName: "mic.circle")
+////                    self.responseArr.append(text)
+//                    self.isMicEnable = true
+////                    self.botView.isHidden = true
+//                    self.tableView.isHidden = false
+//                    self.textViewHC.constant = 50
+//                    IQKeyboardManager.shared.resignFirstResponder()
+//                    self.tableView.reloadData()
+//                    self.scrollToBottom()
+//                }
+//
+//                
+//            } catch {
+////                aiResponse = "Something went wrong.. \n\(error.localizedDescription)"
+//                print(error.localizedDescription)
+//            }
+//        }
+//    }
     
     func sendMessage(sender: String, message: String) {
 //        chatMessages.append((sender, message))
@@ -170,12 +170,13 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         case .stageOne:
             guard let message = textViewField.text, !message.isEmpty else { return }
             
-            if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") && (!chatService.isUpdate) {
+            if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") && (chatService.isUpdate) {
                 chatService.stageFirstConfirm(message, chatRole: .model) { [weak self] in
                     // Update UI on the main thread after receiving response
                     DispatchQueue.main.async {
                         self?.tableView.reloadData()
-                        self?.scrollToBottom() 
+                        self?.scrollToBottom()
+                        
                     }
                 }
                 chatService.messages.append(.init(role: .user, messgae: textViewField.text))
@@ -198,8 +199,18 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
             //
         case .stageTwo:
             print("Ready to work with stage two")
+
         case .stageThree:
             print("Ready to work with stage three")
+            chatService.generatingItineary(textViewField.text) { [weak self] in
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData() // Reload table view with new messages
+                    self?.scrollToBottom() // Optional: Scroll to bottom after adding new message
+                }
+            }
+            chatService.messages.append(.init(role: .user, messgae: textViewField.text))
+            self.tableView.reloadData()
+            textViewField.text = ""
         }
     }
     
@@ -266,7 +277,7 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         self.textViewField.text = userInput
         self.responseArr.append(userInput)
         self.activityIndicator.startAnimating()
-        sendMessage()
+        sendMessage(sender: "", message: userInput)
         
     }
     

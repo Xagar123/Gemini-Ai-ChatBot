@@ -16,6 +16,9 @@ struct TravelInfo {
     
     static var newUser:Bool = true
     static var existingUser:Bool = false
+    
+    static var destInterest = [String]()
+    static var selectedInterest:String?
 }
 
 enum UserState {
