@@ -86,6 +86,13 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
 //            }
 //        }
         
+        chatService.reloadTableViewClosure = { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                self?.scrollToBottom()
+            }
+        }
+        
     }
     
     //MARK: - Fetch Response
@@ -199,9 +206,27 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
             //
         case .stageTwo:
             print("Ready to work with stage two")
+            /*
+             Extracting Budget type
+             */
+            if (!TravelInfo.isBudgetPreferenceExtracted) {
+            chatService.getBudgetType(textViewField.text) { [weak self] in
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                    self?.scrollToBottom()
+                }
+            }
+            chatService.messages.append(.init(role: .user, messgae: textViewField.text))
+            self.tableView.reloadData()
+            textViewField.text = ""
+            }else {
+                print("succesfully extracted the budget type us \(TravelInfo.budgetPreference)")
+            }
+            
 
         case .stageThree:
             print("Ready to work with stage three")
+            
             chatService.generatingItineary(textViewField.text) { [weak self] in
                 DispatchQueue.main.async {
                     self?.tableView.reloadData() // Reload table view with new messages
@@ -304,6 +329,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         cell.responseLabel.textColor = UIColor.white
         
         let message = chatService.messages[indexPath.row]
+        print(message)
 
 //        if sender == "User" {
 //            cell.nameLbl.text = "You"
@@ -330,7 +356,7 @@ extension ViewController: UITableViewDelegate,UITableViewDataSource {
         
         return cell
     }
-    
+     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }

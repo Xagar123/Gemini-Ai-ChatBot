@@ -3,4 +3,240 @@
    uuid = "4C3779BE-4956-49CE-8EE5-B16E34E9950C"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "47ECB870-56A7-45D4-ABD9-1037A006D5DF"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GemeniAi project/ChatService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "537"
+            endingLineNumber = "537"
+            landmarkName = "getBudgetType(_:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "47ECB870-56A7-45D4-ABD9-1037A006D5DF - 4a7f36e0712d91c1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "760">
+               </Location>
+               <Location
+                  uuid = "47ECB870-56A7-45D4-ABD9-1037A006D5DF - 4a7f36e0712d91c1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "744">
+               </Location>
+               <Location
+                  uuid = "47ECB870-56A7-45D4-ABD9-1037A006D5DF - 4a7f36e0712d91c1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "1056">
+               </Location>
+               <Location
+                  uuid = "47ECB870-56A7-45D4-ABD9-1037A006D5DF - bb954dfce126a5c3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "1924">
+               </Location>
+               <Location
+                  uuid = "47ECB870-56A7-45D4-ABD9-1037A006D5DF - 4a7f36e0712d91c1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "533"
+                  endingLineNumber = "533"
+                  offsetFromSymbolStart = "1228">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "978488D3-C148-4AB5-A70C-74E6E8C0D8A8"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GemeniAi project/ChatService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "536"
+            endingLineNumber = "536"
+            landmarkName = "getBudgetType(_:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "978488D3-C148-4AB5-A70C-74E6E8C0D8A8 - 4a7f36e0712d9120"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "532"
+                  endingLineNumber = "532"
+                  offsetFromSymbolStart = "388">
+               </Location>
+               <Location
+                  uuid = "978488D3-C148-4AB5-A70C-74E6E8C0D8A8 - 4a7f36e0712d9120"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "532"
+                  endingLineNumber = "532"
+                  offsetFromSymbolStart = "420">
+               </Location>
+               <Location
+                  uuid = "978488D3-C148-4AB5-A70C-74E6E8C0D8A8 - bb954dfce126a522"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "532"
+                  endingLineNumber = "532"
+                  offsetFromSymbolStart = "1308">
+               </Location>
+               <Location
+                  uuid = "978488D3-C148-4AB5-A70C-74E6E8C0D8A8 - 4a7f36e0712d9120"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "532"
+                  endingLineNumber = "532"
+                  offsetFromSymbolStart = "608">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D0A757B1-CBA6-4A11-85B7-72130620683A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GemeniAi project/ChatService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "532"
+            endingLineNumber = "532"
+            landmarkName = "getBudgetType(_:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D0A757B1-CBA6-4A11-85B7-72130620683A - 4a7f36e0712d909c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "528"
+                  endingLineNumber = "528"
+                  offsetFromSymbolStart = "472">
+               </Location>
+               <Location
+                  uuid = "D0A757B1-CBA6-4A11-85B7-72130620683A - bb954dfce126a49e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "528"
+                  endingLineNumber = "528"
+                  offsetFromSymbolStart = "1360">
+               </Location>
+               <Location
+                  uuid = "D0A757B1-CBA6-4A11-85B7-72130620683A - 4a7f36e0712d909c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async -&gt; () in closure #1 @Sendable () async throws -&gt; () in GemeniAi_project.ChatService.getBudgetType(_: Swift.Optional&lt;Swift.String&gt;, completion: () -&gt; ()) -&gt; ()"
+                  moduleName = "GemeniAi project"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/nxtgen/Desktop/GemeniAi%20project/GemeniAi%20project/ChatService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "528"
+                  endingLineNumber = "528"
+                  offsetFromSymbolStart = "660">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

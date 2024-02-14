@@ -19,6 +19,11 @@ struct TravelInfo {
     
     static var destInterest = [String]()
     static var selectedInterest:String?
+    
+    
+    //MARK: - Stage 2 details
+    static var budgetPreference: String? = ""
+    static var isBudgetPreferenceExtracted:Bool = false
 }
 
 enum UserState {

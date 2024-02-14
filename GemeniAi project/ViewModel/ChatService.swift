@@ -20,7 +20,7 @@ struct ChatMessage: Identifiable {
 }
 
 class ChatService {
-    private var chat: Chat?
+    var chat: Chat?
     var messages = [ChatMessage]()
     
     let model = GenerativeModel(name: "gemini-pro", apiKey: "AIzaSyCMRaH7pJV0r5PbH6yGmNn0HgWNK2_2f4Q", generationConfig: GenerationConfig(
@@ -38,6 +38,7 @@ class ChatService {
     var processState: UserState = .stageOne
     
     var isUpdate:Bool = false
+    var reloadTableViewClosure: (() -> Void)?
     
     func sendMessage(_ message: String,chatRole:ChatRole,completion: @escaping () -> Void) {
         
@@ -272,45 +273,52 @@ class ChatService {
                         Let's move to next stage since user confirm all his details
                         */
                        self.processState = .stageTwo
-                       let textMessage = "Let our AI know what kind of things you’d like to do on your trip!"
+//                       let textMessage = "Let our AI know what kind of things you’d like to do on your trip!"
+                       let textMessage = """
+                        Could you please specify your preference in terms of budget: are you looking for something
+                        1.budget-friendly,
+                        2.comfortable,
+                        3.luxurious?
+                        """
                        messages.append(.init(role: .model, messgae: textMessage))
                        self.isUpdate = true
                        /*
                         Suggesting interest and activity user can perform at that perticular locatio
                         */
-                       Task {
-                           do {
-                               let prompt = "i want to go to \(String(describing: TravelInfo.toLocation)), you need to suggest me what all interest/activity available in the \(String(describing: TravelInfo.toLocation)) and give only 6 best interest/activity only tittle name length max 0 - 5 letters."
-                               let response = try await model.generateContent(prompt)
-                               
-                               guard let text = response.text else {
-                                   messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-                                   return
-                               }
-                               
-                               print(text)
-                               let dataArray = text.components(separatedBy: "\n")
-                               TravelInfo.destInterest = dataArray
-                               let selectedButtons = [dataArray[0], dataArray[2], dataArray[4]]
-                               let selectedOptions = selectedButtons.joined(separator: ", ")
-                               TravelInfo.selectedInterest = selectedOptions
-                               
-                               print(selectedOptions)
-                               print(dataArray)
-                               messages.append(.init(role: .model, messgae: text))
-                               
-                               // custome message
-                               messages.append(.init(role: .model, messgae: "Generating itineary for you"))
-                               self.isUpdate = true
-                               self.processState = .stageThree
-                               completion()
-                               
-                              
-                           }
-                           catch {
-                               messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-                           }
-                       }
+//                        Need to implement don't discard
+//                       Task {
+//                           do {
+//                               let prompt = "i want to go to \(String(describing: TravelInfo.toLocation)), you need to suggest me what all interest/activity available in the \(String(describing: TravelInfo.toLocation)) and give only 6 best interest/activity only tittle name length max 0 - 5 letters."
+//                               let response = try await model.generateContent(prompt)
+//                               
+//                               guard let text = response.text else {
+//                                   messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+//                                   return
+//                               }
+//                               
+//                               print(text)
+//                               let dataArray = text.components(separatedBy: "\n")
+//                               TravelInfo.destInterest = dataArray
+//                               let selectedButtons = [dataArray[0], dataArray[2], dataArray[4]]
+//                               let selectedOptions = selectedButtons.joined(separator: ", ")
+//                               TravelInfo.selectedInterest = selectedOptions
+//                               
+//                               print(selectedOptions)
+//                               print(dataArray)
+//                               messages.append(.init(role: .model, messgae: text))
+//                               
+//                               // custome message
+//                               messages.append(.init(role: .model, messgae: "Generating itineary for you"))
+//                               self.isUpdate = true
+//                               self.processState = .stageThree
+//                               completion()
+//                               
+//                              
+//                           }
+//                           catch {
+//                               messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+//                           }
+//                       }
                    } else {
                        /*
                         Moving back to stage 1 as user want to update his details
@@ -484,6 +492,10 @@ class ChatService {
         }
     }
     
+    
+      
+            
+    
     //MARK: - Stage 3
     func generatingItineary(_ message: String?, completion: @escaping() -> Void) {
         Task {
@@ -495,133 +507,132 @@ class ChatService {
                     messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
                     return
                 }
-               
-               
-//                //MARK: - IF NEED TO CHANGE ANY PREVIOUS DETAIL
-//                Task {
-//                       do {
-//                           let prompt = """
-//                            You're designing a response system based on user input. If the user expresses satisfaction by saying "Yes, I like it," the system should respond with "Yes:1". However, if the user indicates a desire to modify details by saying "I want to change some details," the system should respond with "No:0". Handle both scenarios accordingly. If the user's response doesn't fit either case, return "N/A".
-//
-//                            \(String(describing: message))
-//                            """
-//                           
-//
-//                           let response = try await chat?.sendMessage(prompt)
-//                           
-//                           guard let text = response?.text else {
-//                               messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-//                               return
-//                           }
-//                           
-//                           var yesDetailVal: String?
-//                           var noDetailVal: String?
-//                           
-//                           // Define regular expressions to match "Yes:1" and "No:0" patterns
-//                           let yesRegex = try! NSRegularExpression(pattern: "(Yes:1)", options: .caseInsensitive)
-//                           let noRegex = try! NSRegularExpression(pattern: "(No:0)", options: .caseInsensitive)
-//
-//                           // Match "Yes:1"
-//                           if let yesMatch = yesRegex.firstMatch(in: text, options: [], range: NSRange(text.startIndex..., in: text)) {
-//                               let yesDetail = String(text[Range(yesMatch.range, in: text)!])
-//                               yesDetailVal = yesDetail
-//                               print("Extracted Yes Detail: \(yesDetail)")
-//                           } else {
-//                               print("No 'Yes:1' detail found")
-//                           }
-//
-//                           // Match "No:0"
-//                           if let noMatch = noRegex.firstMatch(in: text, options: [], range: NSRange(text.startIndex..., in: text)) {
-//                               let noDetail = String(text[Range(noMatch.range, in: text)!])
-//                               print("Extracted No Detail: \(noDetail)")
-//                               noDetailVal = noDetail
-//                           } else {
-//                               print("No 'No:0' detail found")
-//                           }
-//                           
-//                           if yesDetailVal == "Yes:1" {
-//                               /*
-//                                Let's move to next stage since user confirm all his details
-//                                */
-////                               self.processState = .stageTwo
-////                               let textMessage = "Let our AI know what kind of things you’d like to do on your trip!"
-////                               messages.append(.init(role: .model, messgae: textMessage))
-////                               self.isUpdate = false
-////                               /*
-////                                Suggesting interest and activity user can perform at that perticular locatio
-////                                */
-////                               Task {
-////                                   do {
-////                                       let prompt = "You are expert at suggesting interest, my user is planning a trip to \(String(describing: TravelInfo.toLocation)) location you have to suggest  all activity he can do in that place step by step in point \(messages) u have to asked for user input and confirmation "
-////                                       let response = try await chat?.sendMessage(prompt)
-////
-////                                       guard let text = response?.text else {
-////                                           messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-////                                           return
-////                                       }
-////
-////                                       print(text)
-////                                       messages.append(.init(role: .model, messgae: text))
-////                                       self.isUpdate = false
-////                                       completion()
-////
-////
-////                                   }
-////                                   catch {
-////                                       messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-////                                   }
-////                               }
-//                           } else {
-//                               /*
-//                                Moving back to stage 1 as user want to update his details
-//                                */
-//                               self.processState = .stageOne
-//
-//                               Task {
-//                                   do {
-//                                       let prompt = "Previously we a planned my trip from \(String(describing: TravelInfo.fromLocation)) to \(String(describing: TravelInfo.toLocation)) for \(String(describing: TravelInfo.duration)) days and \(String(describing: TravelInfo.date)) date.Now Asked user what details he want to update and update only that perticular data and rest will be same"
-//                                       let response = try await chat?.sendMessage(prompt)
-//                                       
-//                                       guard let text = response?.text else {
-//                                           messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-//                                           return
-//                                       }
-//                                       
-//                                       print(text)
-//                                       messages.append(.init(role: .model, messgae: text))
-//                                       self.isUpdate = true
-//                                       completion()
-//                                       
-//                                      
-//                                   }
-//                                   catch {
-//                                       messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-//                                   }
-//                               }
-//                           }
-//
-//                           completion() // Call completion after appending message
-//                       }
-//                       catch {
-//                           messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-//                           completion() // Call completion after appending error message
-//                       }
-//                   }
+                
+                
+                //                //MARK: - IF NEED TO CHANGE ANY PREVIOUS DETAIL
+                //                Task {
+                //                       do {
+                //                           let prompt = """
+                //                            You're designing a response system based on user input. If the user expresses satisfaction by saying "Yes, I like it," the system should respond with "Yes:1". However, if the user indicates a desire to modify details by saying "I want to change some details," the system should respond with "No:0". Handle both scenarios accordingly. If the user's response doesn't fit either case, return "N/A".
+                //
+                //                            \(String(describing: message))
+                //                            """
+                //
+                //
+                //                           let response = try await chat?.sendMessage(prompt)
+                //
+                //                           guard let text = response?.text else {
+                //                               messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                //                               return
+                //                           }
+                //
+                //                           var yesDetailVal: String?
+                //                           var noDetailVal: String?
+                //
+                //                           // Define regular expressions to match "Yes:1" and "No:0" patterns
+                //                           let yesRegex = try! NSRegularExpression(pattern: "(Yes:1)", options: .caseInsensitive)
+                //                           let noRegex = try! NSRegularExpression(pattern: "(No:0)", options: .caseInsensitive)
+                //
+                //                           // Match "Yes:1"
+                //                           if let yesMatch = yesRegex.firstMatch(in: text, options: [], range: NSRange(text.startIndex..., in: text)) {
+                //                               let yesDetail = String(text[Range(yesMatch.range, in: text)!])
+                //                               yesDetailVal = yesDetail
+                //                               print("Extracted Yes Detail: \(yesDetail)")
+                //                           } else {
+                //                               print("No 'Yes:1' detail found")
+                //                           }
+                //
+                //                           // Match "No:0"
+                //                           if let noMatch = noRegex.firstMatch(in: text, options: [], range: NSRange(text.startIndex..., in: text)) {
+                //                               let noDetail = String(text[Range(noMatch.range, in: text)!])
+                //                               print("Extracted No Detail: \(noDetail)")
+                //                               noDetailVal = noDetail
+                //                           } else {
+                //                               print("No 'No:0' detail found")
+                //                           }
+                //
+                //                           if yesDetailVal == "Yes:1" {
+                //                               /*
+                //                                Let's move to next stage since user confirm all his details
+                //                                */
+                ////                               self.processState = .stageTwo
+                ////                               let textMessage = "Let our AI know what kind of things you’d like to do on your trip!"
+                ////                               messages.append(.init(role: .model, messgae: textMessage))
+                ////                               self.isUpdate = false
+                ////                               /*
+                ////                                Suggesting interest and activity user can perform at that perticular locatio
+                ////                                */
+                ////                               Task {
+                ////                                   do {
+                ////                                       let prompt = "You are expert at suggesting interest, my user is planning a trip to \(String(describing: TravelInfo.toLocation)) location you have to suggest  all activity he can do in that place step by step in point \(messages) u have to asked for user input and confirmation "
+                ////                                       let response = try await chat?.sendMessage(prompt)
+                ////
+                ////                                       guard let text = response?.text else {
+                ////                                           messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                ////                                           return
+                ////                                       }
+                ////
+                ////                                       print(text)
+                ////                                       messages.append(.init(role: .model, messgae: text))
+                ////                                       self.isUpdate = false
+                ////                                       completion()
+                ////
+                ////
+                ////                                   }
+                ////                                   catch {
+                ////                                       messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                ////                                   }
+                ////                               }
+                //                           } else {
+                //                               /*
+                //                                Moving back to stage 1 as user want to update his details
+                //                                */
+                //                               self.processState = .stageOne
+                //
+                //                               Task {
+                //                                   do {
+                //                                       let prompt = "Previously we a planned my trip from \(String(describing: TravelInfo.fromLocation)) to \(String(describing: TravelInfo.toLocation)) for \(String(describing: TravelInfo.duration)) days and \(String(describing: TravelInfo.date)) date.Now Asked user what details he want to update and update only that perticular data and rest will be same"
+                //                                       let response = try await chat?.sendMessage(prompt)
+                //
+                //                                       guard let text = response?.text else {
+                //                                           messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                //                                           return
+                //                                       }
+                //
+                //                                       print(text)
+                //                                       messages.append(.init(role: .model, messgae: text))
+                //                                       self.isUpdate = true
+                //                                       completion()
+                //
+                //
+                //                                   }
+                //                                   catch {
+                //                                       messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                //                                   }
+                //                               }
+                //                           }
+                //
+                //                           completion() // Call completion after appending message
+                //                       }
+                //                       catch {
+                //                           messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
+                //                           completion() // Call completion after appending error message
+                //                       }
+                //                   }
                 
                 print(text)
                 messages.append(.init(role: .model, messgae: text))
                 completion()
-               
+                
             }
             catch {
                 messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
             }
         }
     }
-    
-
-    
 }
+
+
 
 
 
