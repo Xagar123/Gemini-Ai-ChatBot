@@ -76,15 +76,12 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
         
-//        let initialText = "👋 Hello there! I'm your trusty Travel Buddy AI, here to make your journey smooth and delightful!"
-       
-        
-//        chatService.startingSendMessage("", chatRole: .model) {
-//            DispatchQueue.main.async {
-//                self.chatService.messages.append(.init(role: .model, messgae: initialText))
-//                self.tableView.reloadData()
-//            }
-//        }
+        chatService.initialWelcomeMessage { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                self?.scrollToBottom()
+            }
+        }
         
         chatService.reloadTableViewClosure = { [weak self] in
             DispatchQueue.main.async {
@@ -177,7 +174,7 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
         case .stageOne:
             guard let message = textViewField.text, !message.isEmpty else { return }
             
-            if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") && (chatService.isUpdate) {
+            if (TravelInfo.shared.toLocation != "N/A") && (TravelInfo.shared.fromLocation != "N/A") && (TravelInfo.shared.duration != "N/A") && (chatService.isUpdate) {
                 chatService.stageFirstConfirm(message, chatRole: .model) { [weak self] in
                     // Update UI on the main thread after receiving response
                     DispatchQueue.main.async {
@@ -206,22 +203,35 @@ class ViewController: UIViewController,UITextViewDelegate, voiceToTextInput {
             //
         case .stageTwo:
             print("Ready to work with stage two")
-            /*
-             Extracting Budget type
-             */
-            if (!TravelInfo.isBudgetPreferenceExtracted) {
-            chatService.getBudgetType(textViewField.text) { [weak self] in
-                DispatchQueue.main.async {
-                    self?.tableView.reloadData()
-                    self?.scrollToBottom()
+            
+            switch chatService.stageSecondProcessState {
+            case .isBudgetPreferenceSelected:
+                chatService.getBudgetType(textViewField.text) { [weak self] in
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                        self?.scrollToBottom()
+                        print("succesfully extracted the budget type us \(String(describing: TravelInfo.shared.budgetPreference))")
+                    }
+                }
+                
+            case .isInterestSelected:
+                print("interest selection")
+            case .isFoodPreferenceSelected:
+                print("food selection")
+                chatService.getFoodPreferenceType(textViewField.text) { [weak self] in
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                        self?.scrollToBottom()
+                        print("got the food type")
+                    }
+                    
                 }
             }
+            
             chatService.messages.append(.init(role: .user, messgae: textViewField.text))
             self.tableView.reloadData()
             textViewField.text = ""
-            }else {
-                print("succesfully extracted the budget type us \(TravelInfo.budgetPreference)")
-            }
+            
             
 
         case .stageThree:

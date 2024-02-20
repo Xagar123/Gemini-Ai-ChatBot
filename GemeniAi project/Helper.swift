@@ -7,23 +7,29 @@
 
 import Foundation
 
-struct TravelInfo {
-    static var toLocation: String? = "N/A"
-    static var fromLocation: String? = "N/A"
-    static var duration: String? = "N/A"
-    static var date: String? = "N/A"
-    static var confirmDetails: String? = "N/A"
+class TravelInfo {
+    static let shared = TravelInfo()
     
-    static var newUser:Bool = true
-    static var existingUser:Bool = false
+    private init() {} // Private initializer to prevent external instantiation
     
-    static var destInterest = [String]()
-    static var selectedInterest:String?
+    var toLocation: String? = "N/A"
+    var fromLocation: String? = "N/A"
+    var duration: String? = "N/A"
+    var date: String? = "N/A"
+    var confirmDetails: String? = "N/A"
     
+    var destInterest = [String]()
+    var selectedInterest: String?
     
     //MARK: - Stage 2 details
-    static var budgetPreference: String? = ""
-    static var isBudgetPreferenceExtracted:Bool = false
+    var budgetPreference: String? = ""
+    var isBudgetPreferenceExtracted: Bool = false
+    
+    // for food preference
+    var foodPreference: String = ""
+    var isFoodPreferenceSelected: Bool = false
+    
+    
 }
 
 enum UserState {
@@ -32,3 +38,9 @@ enum UserState {
     case stageThree
 }
 
+
+enum StageSecondUserState {
+    case isBudgetPreferenceSelected
+    case isInterestSelected
+    case isFoodPreferenceSelected
+}

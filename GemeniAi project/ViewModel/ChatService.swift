@@ -36,24 +36,41 @@ class ChatService {
     ] )
                                     
     var processState: UserState = .stageOne
+    var stageSecondProcessState: StageSecondUserState = .isBudgetPreferenceSelected
     
     var isUpdate:Bool = false
     var reloadTableViewClosure: (() -> Void)?
     
     func sendMessage(_ message: String,chatRole:ChatRole,completion: @escaping () -> Void) {
         
-        if (chat == nil) {
-            let history: [ModelContent] = messages.map { ModelContent(role: $0.role == .user ? "user" : "model", parts: $0.messgae)}
-            chat = GenerativeModel(name: "gemini-pro", apiKey: "AIzaSyCMRaH7pJV0r5PbH6yGmNn0HgWNK2_2f4Q").startChat(history: history)
-        }
+//        if (chat == nil) {
+//            let history: [ModelContent] = messages.map { ModelContent(role: $0.role == .user ? "user" : "model", parts: $0.messgae)}
+//            chat = GenerativeModel(name: "gemini-pro", apiKey: "AIzaSyCMRaH7pJV0r5PbH6yGmNn0HgWNK2_2f4Q").startChat(history: history)
+//        }
         
         // MARK: Add user's message to the list
 //        messages.append(.init(role: .user, messgae: message))
         Task {
                do {
+//                   let prompt = """
+// you are an AI travel assistant and whatever user enter give response in short and precise but user interactive and say how can i assist u to plan a trip and use emoji, and from the user input u have to extract To locaton place name(very important)(if any specific place name is given then extract the city or state name) and from location name(very important) and duration you have to ask user for this detail till he enter,
+// You need to take four inputs from the user one after getting the other,Ask this question step by step for first time just ask To location and so on and extract this detail To location,From location and duration dont ask unnessary detail just this much and give me one by one once you got all details But keep in mind don't ever try to suggested any itinerary or don't say is there something else i can help you. your job is to ask for confirmation yes or no with full trip details. \(messages)
+// """
                    let prompt = """
- you are an AI travel assistant and whatever user enter give response in short and precise but user interactive and say how can i assist u to plan a trip and use emojy, and from the user input u have to extract To locaton place name and from location name and duration you have to ask user for this detail till he enter and extract this detail and from location is must but dont ask unnessary detail just this much and give me one by one once you got all details don't ever try to suggested any itinerary just asked for confirmation at last \(message)
- """
+                   you are an AI travel assistant and whatever user enter give response in short and precise but user interactive and say how can i assist u to plan a trip and use emoji,
+                   You need to take four inputs from the user one after getting the other
+                   Ask this question step by step for first time just ask 1st and so on
+                   1. You need to take To location name((if any specific place name is given then extract the city or state name)) Very important
+                   2. You need to take From location name Very Important
+                   3. Ask for duration in days or number of days
+                   4. Ask for Dates(should be 2024)
+                   once you get all this details then at the end show the summary and ask for confirmation just yes or no.
+                   Don't give any dummy example
+                   You can answer any general question if user ask for suggestion suggest him 
+                   But keep in mind don't ever try to suggested any itinerary or don't say is there something else i can help you. your job is to ask for confirmation yes or no with full trip details.
+                   \(messages)
+                   """
+                
                    
                    let response = try await chat?.sendMessage(prompt)
                    
@@ -90,10 +107,10 @@ class ChatService {
                                        endIndex = aiResponse.endIndex
                                    }
                                    
-                                   TravelInfo.toLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                                   TravelInfo.shared.toLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
                                } else {
                                    // If "To:" is not found, set default value
-                                   TravelInfo.toLocation = TravelInfo.toLocation
+                                   TravelInfo.shared.toLocation = TravelInfo.shared.toLocation
                                }
                                
                                if let fromRange = aiResponse.range(of: "From:") {
@@ -108,10 +125,10 @@ class ChatService {
                                        endIndex = aiResponse.endIndex
                                    }
                                    
-                                   TravelInfo.fromLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                                   TravelInfo.shared.fromLocation = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
                                } else {
                                    // If "From:" is not found, set default value
-                                   TravelInfo.fromLocation = TravelInfo.fromLocation
+                                   TravelInfo.shared.fromLocation = TravelInfo.shared.fromLocation
                                }
                                
                                
@@ -128,10 +145,10 @@ class ChatService {
                                        endIndex = aiResponse.endIndex
                                    }
                                    
-                                   TravelInfo.duration = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                                   TravelInfo.shared.duration = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
                                } else {
                                    // If "Duration:" is not found, set default value
-                                   TravelInfo.duration = TravelInfo.duration
+                                   TravelInfo.shared.duration = TravelInfo.shared.duration
                                }
                                
                                if let dateRange = aiResponse.range(of: "Date:") {
@@ -139,18 +156,18 @@ class ChatService {
                                    let startIndex = dateRange.upperBound
                                    let endIndex = aiResponse.endIndex
                                    
-                                   TravelInfo.date = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                                   TravelInfo.shared.date = aiResponse[startIndex..<endIndex].trimmingCharacters(in: .whitespacesAndNewlines)
                                } else {
                                    // If "Date:" is not found, set default value
-                                   TravelInfo.date = TravelInfo.date
+                                   TravelInfo.shared.date = TravelInfo.shared.date
                                }
                                
-                               print("To:", TravelInfo.toLocation ?? "N/A")
-                               print("From:", TravelInfo.fromLocation ?? "N/A")
-                               print("Duration:", TravelInfo.duration ?? "N/A")
-                               print("Date:", TravelInfo.date ?? "N/A")
+                               print("To:", TravelInfo.shared.toLocation ?? "N/A")
+                               print("From:", TravelInfo.shared.fromLocation ?? "N/A")
+                               print("Duration:", TravelInfo.shared.duration ?? "N/A")
+                               print("Date:", TravelInfo.shared.date ?? "N/A")
                                
-                               if (TravelInfo.toLocation != "N/A") && (TravelInfo.fromLocation != "N/A") && (TravelInfo.duration != "N/A") {
+                               if (TravelInfo.shared.toLocation != "N/A") && (TravelInfo.shared.fromLocation != "N/A") && (TravelInfo.shared.duration != "N/A") {
                                    self.isUpdate = true
                                }
                
@@ -184,7 +201,7 @@ class ChatService {
     
     
     //MARK: - For the first time
-    func startingSendMessage(_ message: String,chatRole:ChatRole,completion: @escaping () -> Void) {
+    func initialWelcomeMessage(completion: @escaping () -> Void) {
         
         if (chat == nil) {
             let history: [ModelContent] = messages.map { ModelContent(role: $0.role == .user ? "user" : "model", parts: $0.messgae)}
@@ -194,7 +211,7 @@ class ChatService {
         
         Task {
                do {
-                   let prompt = ""
+                   let prompt = "You are an Travel buddy, You have to thanks our user for using this service and don't asked preferences and budget or itinerary  just You need  welcome our user and need to  asked how can I plan your trip in {single line}"
                    let response = try await chat?.sendMessage(prompt)
                    
                    guard let text = response?.text else {
@@ -202,18 +219,13 @@ class ChatService {
                        return
                    }
                  
-//                   print(text)
-//                   if chatRole == .user {
-//                       messages.append(.init(role: .user, messgae: text))
-//                   }else {
-//                       messages.append(.init(role: .model, messgae: text))
-//                   }
-                   
-                   completion() // Call completion after appending message
+                   print(text)
+                   messages.append(.init(role: .model, messgae: text))
+                   completion()
                }
                catch {
                    messages.append(.init(role: .model, messgae: "Something went wrong, please try again."))
-                   completion() // Call completion after appending error message
+                   completion()
                }
            }
     }
@@ -281,7 +293,7 @@ class ChatService {
                         3.luxurious?
                         """
                        messages.append(.init(role: .model, messgae: textMessage))
-                       self.isUpdate = true
+                       self.isUpdate = false
                        /*
                         Suggesting interest and activity user can perform at that perticular locatio
                         */
@@ -362,7 +374,7 @@ class ChatService {
     func interestAndSuggestion(_ message: String?, completion: @escaping() -> Void) {
         Task {
             do {
-                let prompt = "i am planning a trip form \(String(describing: TravelInfo.fromLocation)) to \(String(describing: TravelInfo.toLocation)) for \(String(describing: TravelInfo.duration)) asked for confirmation "
+                let prompt = "i am planning a trip form \(String(describing: TravelInfo.shared.fromLocation)) to \(String(describing: TravelInfo.shared.toLocation)) for \(String(describing: TravelInfo.shared.duration)) asked for confirmation "
                 let response = try await chat?.sendMessage(prompt)
                 
                 guard let text = response?.text else {
@@ -452,7 +464,7 @@ class ChatService {
 
                                Task {
                                    do {
-                                       let prompt = "Previously we a planned my trip from \(String(describing: TravelInfo.fromLocation)) to \(String(describing: TravelInfo.toLocation)) for \(String(describing: TravelInfo.duration)) days and \(String(describing: TravelInfo.date)) date.Now Asked user what details he want to update and update only that perticular data and rest will be same"
+                                       let prompt = "Previously we a planned my trip from \(String(describing: TravelInfo.shared.fromLocation)) to \(String(describing: TravelInfo.shared.toLocation)) for \(String(describing: TravelInfo.shared.duration)) days and \(String(describing: TravelInfo.shared.date)) date.Now Asked user what details he want to update and update only that perticular data and rest will be same"
                                        let response = try await chat?.sendMessage(prompt)
                                        
                                        guard let text = response?.text else {
@@ -500,7 +512,7 @@ class ChatService {
     func generatingItineary(_ message: String?, completion: @escaping() -> Void) {
         Task {
             do {
-                let prompt = "i want to plan a trip to \(TravelInfo.toLocation) from \(TravelInfo.fromLocation) for \(TravelInfo.duration) day and my interest are \(TravelInfo.selectedInterest),and my food preference is non-veg please make detailed itenary with time for each day for me add also emoji and don't recommand any hotel for me."
+                let prompt = "i want to plan a trip to \(TravelInfo.shared.toLocation) from \(TravelInfo.shared.fromLocation) for \(TravelInfo.shared.duration) day and my interest are \(TravelInfo.shared.selectedInterest),and my food preference is non-veg please make detailed itenary with time for each day for me add also emoji and don't recommand any hotel for me."
                 let response = try await chat?.sendMessage(prompt)
                 
                 guard let text = response?.text else {
